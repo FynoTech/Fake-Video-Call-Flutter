@@ -1,0 +1,119 @@
+{
+  "base_url": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com",
+  "version": "1.0",
+  "updated": "2026-04-07",
+  "celebrities": [
+    {
+      "id": 1,
+      "name": "Cristiano Ronaldo",
+      "folder": "Cristiano_Ronaldo",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Cristiano_Ronaldo/cristiano-ronaldo-1440x2560-14010.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Cristiano_Ronaldo/Cristiano%20Ronaldo.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Cristiano_Ronaldo/Cristiano%20Ronaldo%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 2,
+      "name": "Eesha Rebba",
+      "folder": "Eesha_Rebba",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Eesha_Rebba/Eesha-Rebba-ght-Weight-Body-Measurements-Family-Biography-5-768x960.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Eesha_Rebba/Esha.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Eesha_Rebba/Esha%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 3,
+      "name": "Gal Gadot",
+      "folder": "Gal_Gadot",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Gal_Gadot/gal%20godat.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Gal_Gadot/Gal%20Gadot.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Gal_Gadot/Gal%20Gadot%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 4,
+      "name": "Hrithik Roshan",
+      "folder": "Hrithik_Roshan",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Hrithik_Roshan/hritik.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Hrithik_Roshan/Hrithik%20Roshan.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Hrithik_Roshan/Hrithik%20Roshan%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 5,
+      "name": "Kajol Devgan",
+      "folder": "Kajol_Devgan",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Kajol_Devgan/Kajol_in_October_2021.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Kajol_Devgan/Kajol.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Kajol_Devgan/Kajol%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 6,
+      "name": "Lionel Messi",
+      "folder": "Lionel_Messi",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Lionel_Messi/messi.jpeg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Lionel_Messi/Messi%20speaking%20english%20better%20than%20Harry%20Kane%20%23Shorts%20-%20Tekkz%20Football%20(1080p%2C%20h264)%20(online-video-cutter.com).mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Lionel_Messi/Messi%20speaking%20english%20better%20than%20Harry%20Kane%20%23Shorts%20-%20Tekkz%20Football%20(1080p%2C%20h264)%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 7,
+      "name": "Madhuri Dixit",
+      "folder": "Madhuri_Dixit",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Madhuri_Dixit/Madhuri_Dixit_promoting_Total_Dhamaal_in_2019_(cropped).jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Madhuri_Dixit/Madhuri%20Dixit.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Madhuri_Dixit/Madhuri%20Dixit%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 8,
+      "name": "Minal Khan",
+      "folder": "Minal_Khan",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Minal%20Khan/pakistani-girl-pictures-7w4xeetn52nbxxvj.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Minal%20Khan/Minal%20Khan.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Minal%20Khan/Minal%20Khan%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 9,
+      "name": "Parul Yadav",
+      "folder": "Parul_Yadav",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Parul_Yadav/parul.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Parul_Yadav/Parul%20Yadav_UD%20(online-video-cutter.com).mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Parul_Yadav/Parul%20Yadav_UD%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 10,
+      "name": "Priyanka Chopra",
+      "folder": "Priyanka_Chopra",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Priyanka_Chopra/ab6761610000e5eb6d087edcae8ec267f8923200-1.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Priyanka_Chopra/Priyanka%20Chopra.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Priyanka_Chopra/Priyanka%20Chopra%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 11,
+      "name": "Raashi Khanna",
+      "folder": "Raashi_Khanna",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Raashi_Khanna/raashi.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Raashi_Khanna/Raashi%20Khanna%20LIVE%20(online-video-cutter.com).mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Raashi_Khanna/Raashi%20Khanna%20LIVE%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 12,
+      "name": "Rashmika Mandanna",
+      "folder": "Rashmika_Mandanna",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Rashmika%20Mandanna/rashmika.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Rashmika%20Mandanna/Rashmika%20Mandanna.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Rashmika%20Mandanna/Rashmika%20Mandanna%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 13,
+      "name": "Sabrina",
+      "folder": "Sabrina",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Sabrina/sabrina1.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Sabrina/Sabrina.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Sabrina/Sabrina%20(audio-extractor.net).mp3"
+    },
+    {
+      "id": 14,
+      "name": "V",
+      "folder": "V",
+      "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/V/fc25fb6f96a4871cf220ec67a689a03f.jpg",
+      "video": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/V/V.mp4",
+      "audio": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/V/V%20(audio-extractor.net).mp3"
+    }
+  ]
+}

@@ -1,0 +1,317 @@
+{
+  "version": "3.0",
+  "updated": "2026-04-16",
+  "base_url": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com",
+  "suppress_ready_celebrity_taps": false,
+  "categories": [
+    {
+      "id": 1,
+      "name": "Bollywood",
+      "icon": "🎬",
+      "key": "bollywood",
+      "celebrities": [
+        {
+          "id": 101,
+          "name": "Alia Bhatt",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Alia_Bhatt/Alia_Bhatt.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Alia_Bhatt/Alia_Bhatt_1.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Alia_Bhatt/Alia_Bhatt_2.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Alia_Bhatt/Alia_Bhatt_3.mp4"
+          ]
+        },
+        {
+          "id": 102,
+          "name": "Deepika Padukone",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Deepika_Padukone/Deepika_Padukone.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Deepika_Padukone/Deepika_1.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Deepika_Padukone/Deepika_2.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Deepika_Padukone/Deepika_3.mp4"
+          ]
+        },
+        {
+          "id": 103,
+          "name": "Hrithik Roshan",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Hrithik_Roshan/Hrithik_Roshan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Hrithik_Roshan/Hrithik_1.mp4"
+          ]
+        },
+        {
+          "id": 104,
+          "name": "Katrina Kaif",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Ranveer_Singh/Ranveer_Singh.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Katrina_Kaif/Katrina_1.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Katrina_Kaif/Katrina_2.mp4"
+          ]
+        },
+        {
+          "id": 105,
+          "name": "Madhuri Dixit",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Madhuri_Dixit/Madhuri_Dixit.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Madhuri_Dixit/Madhuri%20Dixit.mp4"
+          ]
+        },
+        {
+          "id": 106,
+          "name": "Priyanka Chopra",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Priyanka_Chopra/Priyanka_Chopra.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Priyanka_Chopra/Priyanka%20Chopra.mp4"
+          ]
+        },
+        {
+          "id": 107,
+          "name": "Ranveer Singh",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Katrina_Kaif/Katrina_Kaif.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Ranveer_Singh/Ranveer_1.mp4"
+          ]
+        },
+        {
+          "id": 108,
+          "name": "Rashmika Mandanna",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Rashmika_Mandanna/Rashmika_Mandanna.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Rashmika_Mandanna/Rashmika_1.mp4"
+          ]
+        },
+        {
+          "id": 109,
+          "name": "Salman Khan",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Salman_Khan/Salman_Khan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Salman_Khan/Salman_Khan_1.mp4"
+          ]
+        },
+        {
+          "id": 110,
+          "name": "Shah Rukh Khan",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Shah_Rukh_Khan/Shah_Rukh_Khan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/bollywood/Shah_Rukh_Khan/SRK_1.mp4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Lollywood",
+      "icon": "🇵🇰",
+      "key": "lollywood",
+      "celebrities": [
+        {
+          "id": 201,
+          "name": "Ali Zafar",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Ali_Zafar/Ali_Zafar.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Ali_Zafar/Ali_Zafar_1.mp4"
+          ]
+        },
+        {
+          "id": 202,
+          "name": "Atif Aslam",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Atif_Aslam/Atif_Aslam.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Atif_Aslam/Atif_Aslam_1.mp4"
+          ]
+        },
+        {
+          "id": 203,
+          "name": "Fawad Khan",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Fawad_Khan/Fawad_Khan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Fawad_Khan/Fawad_Khan_1.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Fawad_Khan/Fawad_Khan_2.mp4"
+          ]
+        },
+        {
+          "id": 204,
+          "name": "Hania Amir",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Hania_Amir/Hania_Amir.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Hania_Amir/Hania_Amir_1.mp4"
+          ]
+        },
+        {
+          "id": 205,
+          "name": "Mahira Khan",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Mahira_Khan/Mahira_Khan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Mahira_Khan/Mahira_Khan_1.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Mahira_Khan/Mahira_Khan_2.mp4",
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Mahira_Khan/Mahira_Khan_3.mp4"
+          ]
+        },
+        {
+          "id": 206,
+          "name": "Minal Khan",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Minal_Khan/Minal_Khan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Minal%20Khan/Minal%20Khan.mp4"
+          ]
+        },
+        {
+          "id": 207,
+          "name": "Sajal Ali",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Sajal_Ali/Sajal_Ali.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Sajal_Ali/Sajal_Ali_1.mp4"
+          ]
+        },
+        {
+          "id": 208,
+          "name": "Wahaj Ali",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Wahaj_Ali/Wahaj_Ali.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/lollywood/Wahaj_Ali/Wahaj_Ali_1.mp4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Sports",
+      "icon": "⚽",
+      "key": "sports",
+      "celebrities": [
+        {
+          "id": 301,
+          "name": "Cristiano Ronaldo",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Cristiano_Ronaldo/Cristiano_Ronaldo.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Cristiano_Ronaldo/Cristiano%20Ronaldo.mp4"
+          ]
+        },
+        {
+          "id": 302,
+          "name": "Lionel Messi",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Lionel_Messi/Lionel_Messi.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Lionel_Messi/Messi%20speaking%20english%20better%20than%20Harry%20Kane%20%23Shorts%20-%20Tekkz%20Football%20(1080p%2C%20h264)%20(online-video-cutter.com).mp4"
+          ]
+        },
+        {
+          "id": 303,
+          "name": "Babar Azam",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Babar_Azam/Babar_Azam.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Babar_Azam/Babar_Azam_1.mp4"
+          ]
+        },
+        {
+          "id": 304,
+          "name": "Kylian Mbappé",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Kylian_Mbappe/Kylian_Mbappe.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Kylian_Mbappe/Mbappe_1.mp4"
+          ]
+        },
+        {
+          "id": 305,
+          "name": "Neymar",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Neymar/Neymar.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Neymar/Neymar_1.mp4"
+          ]
+        },
+        {
+          "id": 306,
+          "name": "Shaheen Afridi",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Shaheen_Afridi/Shaheen_Afridi.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Shaheen_Afridi/Shaheen_Afridi_1.mp4"
+          ]
+        },
+        {
+          "id": 307,
+          "name": "Virat Kohli",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Virat_Kohli/Virat_Kohli.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/sports/Virat_Kohli/Virat_Kohli_1.mp4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Politicians",
+      "icon": "🏛️",
+      "key": "politicians",
+      "celebrities": [
+        {
+          "id": 401,
+          "name": "Donald Trump",
+          "is_premium": true,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/politicians/Trump/Trump.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/politicians/Trump/Trump.mp4"
+          ]
+        },
+        {
+          "id": 402,
+          "name": "Imran Khan",
+          "is_premium": true,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/politicians/Imran_Khan/Imran_Khan.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/politicians/Imran_Khan/Imran_Khan_1.mp4"
+          ]
+        },
+        {
+          "id": 403,
+          "name": "Narendra Modi",
+          "is_premium": true,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/politicians/Modi/Modi.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/politicians/Modi/Modi_1.mp4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "International",
+      "icon": "🌍",
+      "key": "international",
+      "celebrities": [
+        {
+          "id": 501,
+          "name": "Gal Gadot",
+          "is_premium": false,
+          "image": "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/vfc2/international/Gal_Gadot/Gal_Gadot.png",
+          "videos": [
+            "https://vfc-media-assets-077463315540-us-east-1-an.s3.amazonaws.com/persons/Gal_Gadot/Gal%20Gadot.mp4"
+          ]
+        }
+      ]
+    }
+  ]
+}

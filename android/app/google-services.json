@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1041537629658",
+    "project_id": "video-fake-call-app-ab",
+    "storage_bucket": "video-fake-call-app-ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041537629658:android:4f4fa6e6b4dc58868d54e3",
+        "android_client_info": {
+          "package_name": "com.fynotech.prankcall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSeUmPD3EtmKXRpJXiyIg0pnDOCuWR3Es"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
