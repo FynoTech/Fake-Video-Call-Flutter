@@ -9,6 +9,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:prank_call_app/app/theme/app_assets.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../../../app/theme/app_colors.dart';
@@ -22,6 +23,7 @@ import '../../../core/services/persons_storage_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/subscription_service.dart';
 import '../../../widgets/ad_loading_dialog.dart';
+import '../views/fake_chat_browse_view.dart';
 import '../views/vfc_browse_view.dart';
 
 class HomeController extends GetxController {
@@ -141,6 +143,10 @@ class HomeController extends GetxController {
     unawaited(_openVfcBrowseAsync());
   }
 
+  void openFakeChatBrowse() {
+    Get.to(() => const FakeChatBrowseView());
+  }
+
   Future<void> _showInterstitialAd(String adUnitId) async {
     if (_interstitialAdInFlight || adUnitId.trim().isEmpty) {
       debugPrint(
@@ -235,6 +241,36 @@ class HomeController extends GetxController {
     }
   }
 
+  void openAudioCallBrowse() {
+    if (_openingBrowse) return;
+    _openingBrowse = true;
+    unawaited(_openAudioCallBrowseAsync());
+  }
+
+  Future<void> _openAudioCallBrowseAsync() async {
+    try {
+      final adId = _interstitialCounter.pickAdIdForClick(
+        placement: 'home_see_all',
+        screenInterstitialEnabled: _adsRc.homeSeeAllInterstitialOn,
+        screenInterstitialId: _adsRc.homeSeeAllInterstitialId,
+      );
+      await showAdLoadingDialog<void>(
+        task: () async {
+          if (adId != null) {
+            await _showInterstitialAd(adId);
+          }
+        },
+        title: 'Ad Loading',
+      );
+      Get.toNamed(
+        AppRoutes.personsCatalog,
+        arguments: <String, dynamic>{'forVideoCall': false},
+      );
+    } finally {
+      _openingBrowse = false;
+    }
+  }
+
   List<PersonItem> customPersonsForCategory(String categoryId) {
     final key = '/${PersonsStorageService.customFolder}/$categoryId/';
     return _persons.persons
@@ -264,8 +300,8 @@ class HomeController extends GetxController {
     if (_openingCall) return;
     _openingCall = true;
     try {
-      final shouldGate = forceWatchAdGate ||
-          _callsSinceWatchAdGate >= _watchAdGateThreshold;
+      final shouldGate =
+          forceWatchAdGate || _callsSinceWatchAdGate >= _watchAdGateThreshold;
       if (shouldGate && !_subscription.isPremium.value) {
         final proceed = await _runWatchAdGateFlow();
         if (!proceed) return;
@@ -308,11 +344,11 @@ class HomeController extends GetxController {
   Future<bool> _showWatchAdDialog() async {
     final result = await Get.dialog<bool>(
       Dialog(
-        insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 24),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
         backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(22, 14, 22, 22),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -320,57 +356,57 @@ class HomeController extends GetxController {
                 alignment: Alignment.centerRight,
                 child: InkWell(
                   onTap: () => Get.back(result: false),
-                  borderRadius: BorderRadius.circular(14),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
-                    child: Icon(Icons.close, size: 24),
+                  borderRadius: BorderRadius.circular(18),
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFECECEC),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.close_rounded,
+                      size: 18,
+                      color: Color(0xFF6B6B6B),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 2),
+
+              Image.asset(
+                AppAssets.icWatchAD,
+                height: 120,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 3),
               Text(
                 'watch_ad_title'.tr,
                 textAlign: TextAlign.center,
-                style: Get.textTheme.titleLarge?.copyWith(
+                style: Get.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppColors.gradientAppBarEnd,
+                  fontSize: 18,
+                  color: AppColors.black,
+                  height: 1.25,
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
-                'watch_ad_premium_message'.tr,
-                textAlign: TextAlign.center,
-                style: Get.textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textMuted65,
-                  fontWeight: FontWeight.w500,
-                ),
+              _WatchAdPillButton(
+                label: 'watch_ad_action'.tr,
+                backgroundColor: AppColors.primaryColor,
+                textColor: AppColors.white,
+                trailing: _AdPill(),
+                onTap: () => Get.back(result: true),
               ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Expanded(
-                    child: _WatchAdDialogButton(
-                      label: 'watch_ad_premium_action'.tr,
-                      onTap: () {
-                        Get.back(result: false);
-                        Get.toNamed(AppRoutes.premium);
-                      },
-                      customGradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [Color(0xFFFF990B), Color(0xFFFDE277)],
-                      ),
-                      textColor: AppColors.black,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _WatchAdDialogButton(
-                      label: 'watch_ad_action'.tr,
-                      onTap: () => Get.back(result: true),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 12),
+              _WatchAdPillButton(
+                label: 'watch_ad_premium_action'.tr,
+                backgroundColor: AppColors.premiumColor,
+                textColor: AppColors.white,
+                onTap: () {
+                  Get.back(result: false);
+                  Get.toNamed(AppRoutes.premium);
+                },
               ),
             ],
           ),
@@ -424,9 +460,11 @@ class HomeController extends GetxController {
           completeFlow();
         },
       );
-      ad.show(onUserEarnedReward: (_, __) {
-        userEarnedReward = true;
-      });
+      ad.show(
+        onUserEarnedReward: (_, __) {
+          userEarnedReward = true;
+        },
+      );
     }
 
     void showRewardedInterstitial(RewardedInterstitialAd ad) {
@@ -445,9 +483,11 @@ class HomeController extends GetxController {
           completeFlow();
         },
       );
-      ad.show(onUserEarnedReward: (_, __) {
-        userEarnedReward = true;
-      });
+      ad.show(
+        onUserEarnedReward: (_, __) {
+          userEarnedReward = true;
+        },
+      );
     }
 
     if (canLoadRewarded) {
@@ -536,52 +576,76 @@ class HomeController extends GetxController {
   }
 }
 
-class _WatchAdDialogButton extends StatelessWidget {
-  const _WatchAdDialogButton({
+class _WatchAdPillButton extends StatelessWidget {
+  const _WatchAdPillButton({
     required this.label,
+    required this.backgroundColor,
+    required this.textColor,
     required this.onTap,
-    this.useGradient = true,
-    this.solidColor,
-    this.textColor,
-    this.customGradient,
+    this.trailing,
   });
 
   final String label;
+  final Color backgroundColor;
+  final Color textColor;
   final VoidCallback onTap;
-  final bool useGradient;
-  final Color? solidColor;
-  final Color? textColor;
-  final LinearGradient? customGradient;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48,
+      height: 56,
+      width: double.infinity,
       child: Material(
         color: AppColors.transparent,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
           child: Ink(
-            decoration: BoxDecoration(
-              gradient: customGradient ?? (useGradient ? AppColors.appBarGradient : null),
-              color: useGradient
-                  ? null
-                  : (solidColor ?? const Color(0xFFE2E2E2)),
-            ),
+            decoration: BoxDecoration(color: backgroundColor),
             child: Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: textColor ??
-                      (useGradient ? AppColors.white : AppColors.black),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
+                  if (trailing != null) ...[
+                    const SizedBox(width: 10),
+                    trailing!,
+                  ],
+                ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AdPill extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.25),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Text(
+        'AD',
+        style: TextStyle(
+          color: AppColors.white,
+          fontWeight: FontWeight.w800,
+          fontSize: 11,
+          letterSpacing: 0.5,
         ),
       ),
     );

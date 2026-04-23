@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../core/ads/ads_remote_config_service.dart';
 import '../../../widgets/ads/race_banner_native_slot.dart';
-import '../../../widgets/gradient_app_bar.dart';
 import '../controllers/language_controller.dart';
 
 class LanguageView extends GetView<LanguageController> {
@@ -18,33 +18,72 @@ class LanguageView extends GetView<LanguageController> {
     final topNativeFactory = _pickNativeFactoryIdForLanguageTop(ads);
     final bottomNativeFactory = _pickNativeFactoryIdForLanguageBottom(ads);
     final topHasAny = ads.languageTopBannerOn || topNativeFactory != null;
-    final bottomHasAny = ads.languageBottomBannerOn || bottomNativeFactory != null;
+    final bottomHasAny =
+        ads.languageBottomBannerOn || bottomNativeFactory != null;
     // One ad at a time: bottom wins if enabled; otherwise show top (if enabled).
     final showBottom = bottomHasAny;
     final showTop = !bottomHasAny && topHasAny;
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: GradientAppBar(
-        title: 'language_title'.tr,
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: false,
+        automaticallyImplyLeading: false,
+        titleSpacing: 14,
+        title: Text(
+          'Choose Language',
+          style: const TextStyle(
+            fontFamily: 'Audiowide',
+            fontSize: 18,
+            color: AppColors.black,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        leadingWidth: 56,
+        leading: Padding(
+          padding: const EdgeInsetsDirectional.only(start: 12),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            splashRadius: 20,
+            icon: SvgPicture.asset(
+              'assets/setting/ic_back.svg',
+              width: 35,
+              height: 35,
+            ),
+          ),
+        ),
         actions: [
           Obx(() {
             final hasSelection = controller.selectedCode.value != null;
-            if (!hasSelection) return const SizedBox.shrink();
             return Padding(
-              padding: const EdgeInsetsDirectional.only(end: 18),
-              child: InkWell(
-                onTap: controller.confirm,
-                customBorder: const CircleBorder(),
-                child: SizedBox(
-                  width: 25,
-                  height: 25,
-                  child: Center(
-                    child: Image.asset(
-                      'assets/ic_done.png',
-                      width: 21,
-                      height: 21,
-                      fit: BoxFit.contain,
+              padding: const EdgeInsetsDirectional.only(end: 14),
+              child: Opacity(
+                opacity: hasSelection ? 1 : 0.5,
+                child: IgnorePointer(
+                  ignoring: !hasSelection,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(24),
+                    onTap: controller.confirm,
+                    child: Ink(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        color: AppColors.primaryColor,
+                      ),
+                      child: Text(
+                        'Done',
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -74,20 +113,28 @@ class LanguageView extends GetView<LanguageController> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Obx(() {
                   final selectedCode = controller.selectedCode.value;
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(top: 15, bottom: 20),
-                    itemCount: controller.options.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
-                    itemBuilder: (context, index) {
-                      final o = controller.options[index];
-                      final selected = selectedCode == o.code;
-                      return _LanguageTile(
-                        flagAsset: o.flagAsset,
-                        label: o.label,
-                        selected: selected,
-                        onTap: () => controller.select(o.code),
-                      );
-                    },
+                  return Column(
+                    children: [
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child: ListView.separated(
+                          padding: const EdgeInsets.only(top: 8, bottom: 18),
+                          itemCount: controller.options.length,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (context, index) {
+                            final o = controller.options[index];
+                            final selected = selectedCode == o.code;
+                            return _LanguageTile(
+                              flagAsset: o.flagAsset,
+                              label: o.label,
+                              selected: selected,
+                              onTap: () => controller.select(o.code),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 }),
               ),
@@ -166,47 +213,35 @@ class _LanguageTile extends StatelessWidget {
       color: AppColors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(LanguageView._cardRadius),
-        child: AnimatedContainer(
-          height: 65,
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: selected
-                ? AppColors.languageCardSelectedFill
-                : AppColors.white,
-            borderRadius: BorderRadius.circular(LanguageView._cardRadius),
-            border: Border.all(
-              color: selected
-                  ? AppColors.languageSelectedAccent
-                  : AppColors.languageCardBorderUnselected,
-              width: selected ? 1.5 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Image.asset(
-                  flagAsset,
-                  width: 25,
-                  height: 20,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.black87,
+        borderRadius: BorderRadius.circular(14),
+        child: SizedBox(
+          height: 64,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Row(
+              children: [
+                ClipOval(
+                  child: Image.asset(
+                    flagAsset,
+                    width: 46,
+                    height: 46,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
-              _LanguageRadio(selected: selected),
-            ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black87,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                _LanguageRadio(selected: selected),
+              ],
+            ),
           ),
         ),
       ),
@@ -219,9 +254,8 @@ class _LanguageRadio extends StatelessWidget {
 
   final bool selected;
 
-  static const _outer = 22.0;
+  static const _outer = 32.0;
   static const _borderW = 2.0;
-  static const _innerDot = 9.0;
 
   @override
   Widget build(BuildContext context) {
@@ -234,22 +268,13 @@ class _LanguageRadio extends StatelessWidget {
               height: _outer,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white,
-                  border: Border.all(
-                    color: AppColors.languageSelectedAccent,
-                    width: _borderW,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.primaryColor,
                 ),
-                child: Center(
-                  child: Container(
-                    width: _innerDot,
-                    height: _innerDot,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.languageSelectedAccent,
-                    ),
-                  ),
+                child: const Icon(
+                  Icons.check_rounded,
+                  color: AppColors.white,
+                  size: 20,
                 ),
               ),
             )
@@ -259,7 +284,7 @@ class _LanguageRadio extends StatelessWidget {
               height: _outer,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(12),
                   color: AppColors.transparent,
                   border: Border.all(
                     color: AppColors.languageRadioBorderUnselected,

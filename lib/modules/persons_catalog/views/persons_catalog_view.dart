@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
@@ -19,7 +20,11 @@ class PersonsCatalogView extends GetView<PersonsCatalogController> {
         title: 'choose_category'.tr,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: SvgPicture.asset(
+            'assets/setting/ic_back.svg',
+            width: 22,
+            height: 22,
+          ),
           onPressed: () => Get.back(),
         ),
       ),
@@ -64,6 +69,7 @@ class PersonsCatalogView extends GetView<PersonsCatalogController> {
                 avatarSize: 72,
                 maxLabelLines: 2,
                 showAvatarBorder: false,
+                useScallopedAvatarFrame: !controller.forVideoCall,
                 needsNetworkForMedia: controller.forVideoCall
                     ? isRemoteMediaUrl(person.videoUrl)
                     : isRemoteMediaUrl(person.audioUrl),

@@ -100,11 +100,15 @@ flutter:
           weight: 600
         - asset: assets/fonts/Roboto-Bold.ttf
           weight: 700
+    - family: Audiowide
+      fonts:
+        - asset: assets/fonts/Audiowide-Regular.ttf
 
   assets:
     - assets/ob_bg.png
     - assets/splash_bg.png
     - assets/ic_splash.png
+    - assets/splash/
     - assets/ic_done.png
     - assets/ic_audio.png
     - assets/ic_video.png
@@ -120,6 +124,7 @@ flutter:
     - assets/add_new/
     - assets/premium/
     - assets/data/
+    - assets/home/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

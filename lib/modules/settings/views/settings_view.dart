@@ -147,11 +147,15 @@ class SettingsView extends GetView<SettingsController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.backgroundColor,
       appBar: GradientAppBar(
         title: 'settings_title'.tr,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: SvgPicture.asset(
+            'assets/setting/ic_back.svg',
+            width: 22,
+            height: 22,
+          ),
           onPressed: () => Get.back(),
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../app/theme/app_assets.dart';
 import '../../../app/theme/app_colors.dart';
 
 class HomeSectionHeader extends StatelessWidget {
@@ -75,25 +77,40 @@ class _PillSeeAllButton extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
             gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppColors.gradientAppBarStart,
-                AppColors.gradientAppBarMid,
-                AppColors.gradientAppBarEnd,
-              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Color(0xFFC99BFF), Color(0xFFA568FF)],
             ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFA568FF).withValues(alpha: 0.25),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    letterSpacing: 0.2,
-                  ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  AppAssets.icSeeAll,
+                  width: 22,
+                  height: 22,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        letterSpacing: 0.2,
+                      ),
+                ),
+              ],
             ),
           ),
         ),

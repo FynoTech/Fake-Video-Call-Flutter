@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -659,10 +660,17 @@ class _VideoRingAvatar extends StatelessWidget {
       return Image(
         image: CachedNetworkImageProvider(networkUrl!),
         fit: BoxFit.cover,
+        alignment: Alignment.topCenter,
         width: r,
         height: r,
         errorBuilder: (_, __, ___) =>
-            Image.asset(assetFallback, fit: BoxFit.cover, width: r, height: r),
+            Image.asset(
+              assetFallback,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              width: r,
+              height: r,
+            ),
       );
     }
     if (!kIsWeb &&
@@ -672,29 +680,90 @@ class _VideoRingAvatar extends StatelessWidget {
       return Image.file(
         File(filePath!),
         fit: BoxFit.cover,
+        alignment: Alignment.topCenter,
         width: r,
         height: r,
         errorBuilder: (_, __, ___) =>
-            Image.asset(assetFallback, fit: BoxFit.cover, width: r, height: r),
+            Image.asset(
+              assetFallback,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              width: r,
+              height: r,
+            ),
       );
     }
-    return Image.asset(assetFallback, fit: BoxFit.cover, width: r, height: r);
+    return Image.asset(
+      assetFallback,
+      fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+      width: r,
+      height: r,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.white.withValues(alpha: 0.95),
-          width: 2,
-        ),
+    final size = radius * 2;
+    final outerSize = size + 6;
+    final innerSize = size - 2;
+    return SizedBox(
+      width: outerSize,
+      height: outerSize,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ClipPath(
+            clipper: const _AvatarScallopClipper(petals: 12, innerFactor: 0.90),
+            child: Container(
+              width: outerSize,
+              height: outerSize,
+              color: AppColors.white.withValues(alpha: 0.96),
+            ),
+          ),
+          ClipPath(
+            clipper: const _AvatarScallopClipper(petals: 12, innerFactor: 0.90),
+            child: SizedBox(width: innerSize, height: innerSize, child: _photo()),
+          ),
+        ],
       ),
-      child: ClipOval(child: _photo()),
     );
   }
+}
+
+class _AvatarScallopClipper extends CustomClipper<Path> {
+  const _AvatarScallopClipper({
+    required this.petals,
+    required this.innerFactor,
+  });
+
+  final int petals;
+  final double innerFactor;
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final center = Offset(size.width / 2, size.height / 2);
+    final outerRadius = size.shortestSide / 2;
+    final innerRadius = outerRadius * innerFactor;
+    final bumpRadius = outerRadius - innerRadius + outerRadius * 0.05;
+    final ringRadius = outerRadius - bumpRadius;
+
+    path.addOval(Rect.fromCircle(center: center, radius: innerRadius));
+    for (int i = 0; i < petals; i++) {
+      final angle = -pi / 2 + i * (2 * pi / petals);
+      final c = Offset(
+        center.dx + cos(angle) * ringRadius,
+        center.dy + sin(angle) * ringRadius,
+      );
+      path.addOval(Rect.fromCircle(center: c, radius: bumpRadius));
+    }
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant _AvatarScallopClipper oldClipper) =>
+      oldClipper.petals != petals || oldClipper.innerFactor != innerFactor;
 }
 
 class _IncomingHeader extends StatelessWidget {
@@ -864,7 +933,7 @@ class _CallAgainBottomBar extends StatelessWidget {
         child: FilledButton(
           onPressed: () => onCallAgain(),
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.callAgainPillBlue,
+            backgroundColor: AppColors.primaryColor,
             foregroundColor: AppColors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(vertical: 16),

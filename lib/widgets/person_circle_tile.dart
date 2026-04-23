@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import '../app/theme/app_colors.dart';
 import '../core/services/network_status_service.dart';
 import 'app_shimmer.dart';
+import 'scalloped_avatar_frame.dart';
 
 /// Circular avatar + label; [isMore] shows the “+” placeholder instead of a photo.
 class PersonCircleTile extends StatelessWidget {
@@ -27,6 +28,10 @@ class PersonCircleTile extends StatelessWidget {
 
     /// When true, tile reacts to connectivity for remote media (no red offline ring).
     this.needsNetworkForMedia = false,
+
+    /// iOS-style scalloped frame (e.g. audio-call person grid).
+    this.useScallopedAvatarFrame = false,
+    this.scallopedRingColor,
   });
 
   final String label;
@@ -40,8 +45,13 @@ class PersonCircleTile extends StatelessWidget {
   final bool showAvatarBorder;
   final Widget? avatarBadge;
   final bool needsNetworkForMedia;
+  final bool useScallopedAvatarFrame;
+  final Color? scallopedRingColor;
 
   static const Color _ringBlue = AppColors.gradientAppBarMid;
+
+  /// Visible on light backgrounds (audio catalog).
+  static const Color _catalogScallopRing = Color(0xFFB9C8DF);
 
   static bool _httpUrl(String? u) {
     if (u == null || u.isEmpty) return false;
@@ -64,8 +74,48 @@ class PersonCircleTile extends StatelessWidget {
   }
 
   Widget _buildTile(BuildContext context, {required bool online}) {
-    final showRing = showAvatarBorder || (needsNetworkForMedia && !online);
     final ringColor = _ringBlue;
+    final usePlainRing =
+        !useScallopedAvatarFrame &&
+            (showAvatarBorder || (needsNetworkForMedia && !online));
+
+    Widget avatarCore() {
+      if (useScallopedAvatarFrame) {
+        return ScallopedAvatarFrame(
+          innerDiameter: avatarSize,
+          ringColor: scallopedRingColor ?? _catalogScallopRing,
+          ringBaseWidth: 2.7,
+          scallopDepth: 1.35,
+          lobes: 12,
+          child: _buildInner(context, online: online),
+        );
+      }
+      if (usePlainRing) {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: ringColor, width: borderWidth),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: SizedBox(
+              width: avatarSize,
+              height: avatarSize,
+              child: ClipOval(
+                child: _buildInner(context, online: online),
+              ),
+            ),
+          ),
+        );
+      }
+      return SizedBox(
+        width: avatarSize,
+        height: avatarSize,
+        child: ClipOval(child: _buildInner(context, online: online)),
+      );
+    }
+
+    final avatarWidget = avatarCore();
 
     return GestureDetector(
       onTap: onTap,
@@ -76,28 +126,7 @@ class PersonCircleTile extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              showRing
-                  ? Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: ringColor, width: borderWidth),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: SizedBox(
-                          width: avatarSize,
-                          height: avatarSize,
-                          child: ClipOval(
-                            child: _buildInner(context, online: online),
-                          ),
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      width: avatarSize,
-                      height: avatarSize,
-                      child: ClipOval(child: _buildInner(context, online: online)),
-                    ),
+              avatarWidget,
               if (avatarBadge != null)
                 Positioned(
                   top: -2,
