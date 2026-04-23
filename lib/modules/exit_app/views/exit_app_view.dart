@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../../app/theme/app_assets.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/ads/ads_remote_config_service.dart';
 import '../../../widgets/ads/race_banner_native_slot.dart';
-import '../../../widgets/gradient_app_bar.dart';
 
 class ExitAppView extends StatelessWidget {
   const ExitAppView({super.key});
@@ -17,125 +17,146 @@ class ExitAppView extends StatelessWidget {
     final bottomNativeFactory = _pickNativeFactoryIdForExitBottom(ads);
     final topHasAny = ads.exitTopBannerOn || topNativeFactory != null;
     final bottomHasAny = ads.exitBottomBannerOn || bottomNativeFactory != null;
-    final showBottom = bottomHasAny;
-    final showTop = !bottomHasAny && topHasAny;
+    final adFactory = bottomNativeFactory ?? topNativeFactory;
+    final showAd = topHasAny || bottomHasAny;
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: GradientAppBar(title: 'exit_app_title'.tr, centerTitle: true),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        title: Text(
+          'Exit Screen',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: AppColors.black),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            if (showTop) ...[
-              RaceBannerNativeSlot(
-                bannerEnabled: ads.exitTopBannerOn,
-                nativeEnabled: topNativeFactory != null,
-                bannerUnitId: ads.exitBannerId,
-                nativeUnitId: ads.exitNativeId,
-                debugLabel: 'exit_top_slot',
-                nativeFactoryId: topNativeFactory,
-                nativeHeight: _nativeHeightForFactory(topNativeFactory),
-              ),
-              const SizedBox(height: 12),
-            ],
             Expanded(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 520),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          'assets/exit/exit_icon.png',
-                          width: 220,
-                          height: 220,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 25),
-                        Text(
-                          'exit_app_message'.tr,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: AppColors.black,
-                            fontWeight: FontWeight.w500,
-                            height: 1.25,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () => Get.back(),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF2F4FA),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.close_rounded,
+                                size: 20,
+                                color: Color(0xFF667085),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 40),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Material(
-                                color: AppColors.transparent,
-                                borderRadius: BorderRadius.circular(28),
-                                clipBehavior: Clip.antiAlias,
-                                child: InkWell(
-                                  onTap: () => Get.back(),
-                                  child: Ink(
-                                    decoration: const BoxDecoration(
-                                      gradient: AppColors.appBarGradient,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 14),
-                                    child: Center(
-                                      child: Text(
-                                        'cancel'.tr,
-                                        style: Theme.of(context).textTheme.labelLarge
-                                            ?.copyWith(
-                                              color: AppColors.white,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () async {
-                                  await SystemNavigator.pop();
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: AppColors.textMuted72,
-                                  side: const BorderSide(
-                                    color: AppColors.languageCardBorderUnselected,
-                                    width: 1.2,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(28),
-                                  ),
-                                ),
-                                child: Text(
-                                  'exit'.tr,
-                                  style: Theme.of(context).textTheme.labelLarge
-                                      ?.copyWith(fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          ],
+                        const SizedBox(height: 2),
+                        Image.asset(
+                          AppAssets.icHomeExit,
+                          width: 190,
+                          height: 190,
+                          fit: BoxFit.contain,
                         ),
-                        const SizedBox(height: 26),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Prank Fake Video Call',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            color: AppColors.black,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Realistic fake video calls-prank your friends and capture priceless reactions! 😂📱',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.black.withValues(alpha: 0.32),
+                            fontSize: 13,
+                            height: 1.35,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: () => Get.back(),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              foregroundColor: AppColors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            child: const Text(
+                              'Try Now',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (showAd)
+                    RaceBannerNativeSlot(
+                      bannerEnabled: ads.exitBottomBannerOn || ads.exitTopBannerOn,
+                      nativeEnabled: adFactory != null,
+                      bannerUnitId: ads.exitBannerId,
+                      nativeUnitId: ads.exitNativeId,
+                      debugLabel: 'exit_middle_slot',
+                      nativeFactoryId: adFactory,
+                      nativeHeight: _nativeHeightForFactory(adFactory),
+                    ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () async => SystemNavigator.pop(),
+              child: Container(
+                color: const Color(0xFFE2CCF3),
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.sentiment_very_dissatisfied_rounded, size: 34),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Close the App',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppColors.black,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-            if (showBottom) ...[
-              const SizedBox(height: 8),
-              RaceBannerNativeSlot(
-                bannerEnabled: ads.exitBottomBannerOn,
-                nativeEnabled: bottomNativeFactory != null,
-                bannerUnitId: ads.exitBannerId,
-                nativeUnitId: ads.exitNativeId,
-                debugLabel: 'exit_bottom_slot',
-                nativeFactoryId: bottomNativeFactory,
-                nativeHeight: _nativeHeightForFactory(bottomNativeFactory),
-              ),
-            ],
           ],
         ),
       ),

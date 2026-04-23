@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
@@ -6,7 +7,6 @@ import '../../../core/ads/ads_remote_config_service.dart';
 import '../../../core/services/subscription_service.dart';
 import '../../../widgets/ads/race_banner_native_slot.dart';
 import '../../../widgets/app_loading_indicator.dart';
-import '../../../widgets/gradient_app_bar.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/vfc_celebrities_section.dart';
 
@@ -36,13 +36,32 @@ class _VfcBrowseViewState extends State<VfcBrowseView> {
     final bottomNativeFactory = _pickNativeFactoryIdForBrowseBottom(ads);
     final showBottomAd = ads.homeSeeAllBottomBannerOn || bottomNativeFactory != null;
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: GradientAppBar(
-        title: 'home_section_main_features'.tr,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Get.back(),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        automaticallyImplyLeading: false,
+        titleSpacing: 8,
+        title: Row(
+          children: [
+            _BrowseBackButton(onTap: () => Get.back()),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'home_section_trending_calls'.tr,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontFamily: 'Audiowide',
+                  fontSize: 24,
+                  color: AppColors.black,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       body: SafeArea(
@@ -114,6 +133,25 @@ String? _pickNativeFactoryIdForBrowseBottom(AdsRemoteConfigService ads) {
   }
   if (ads.homeSeeAllBottomNativeSmallInlineOn) return 'native_small_inline';
   return null;
+}
+
+class _BrowseBackButton extends StatelessWidget {
+  const _BrowseBackButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onTap,
+      splashRadius: 20,
+      icon: SvgPicture.asset(
+        'assets/setting/ic_back.svg',
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
 }
 
 double _nativeHeightForFactory(String? factoryId) {

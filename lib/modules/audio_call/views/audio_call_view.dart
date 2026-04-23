@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/ads/ads_remote_config_service.dart';
 import '../../../widgets/ads/race_banner_native_slot.dart';
+import '../../../widgets/scalloped_avatar_frame.dart';
 import '../controllers/audio_call_controller.dart';
 
 const double _kFixedCallNativeAdHeight = 100;
@@ -23,83 +24,81 @@ class AudioCallView extends GetView<AudioCallController> {
   Widget build(BuildContext context) {
     final ads = Get.find<AdsRemoteConfigService>();
     final showFixedBottomAd = ads.callBottomNativeSmallInlineOn;
-    return Obx(() {
-      return PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) return;
-          unawaited(controller.onNavigateBack());
-        },
-        child: Scaffold(
-          backgroundColor: AppColors.black,
-          body: MediaQuery.removePadding(
-            context: context,
-            removeBottom: true,
-            child: Stack(
-              fit: StackFit.expand,
-              clipBehavior: Clip.none,
-              children: [
-                Obx(
-                  () => Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      _BlurredBackdrop(
-                        networkUrl: controller.networkImageUrl.value,
-                        filePath: controller.localImagePath.value,
-                        assetFallback: AudioCallController.placeholderAsset,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        unawaited(controller.onNavigateBack());
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.black,
+        body: MediaQuery.removePadding(
+          context: context,
+          removeBottom: true,
+          child: Stack(
+            fit: StackFit.expand,
+            clipBehavior: Clip.none,
+            children: [
+              Obx(
+                () => Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _BlurredBackdrop(
+                      networkUrl: controller.networkImageUrl.value,
+                      filePath: controller.localImagePath.value,
+                      assetFallback: AudioCallController.placeholderAsset,
+                    ),
+                    Container(
+                      color: AppColors.black.withValues(alpha: 0.35),
+                    ),
+                    SafeArea(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(height: 40),
+                          _CallerHeader(controller: controller),
+                          const Spacer(),
+                          Obx(() {
+                            final p = controller.phase.value;
+                            if (p == AudioCallPhase.incoming ||
+                                p == AudioCallPhase.playing) {
+                              return _BottomCallActions(
+                                onReject: controller.onReject,
+                                onAccept: controller.onAccept,
+                                acceptEnabled: p == AudioCallPhase.incoming &&
+                                    !controller.acceptInProgress.value,
+                              );
+                            }
+                            if (p == AudioCallPhase.ended) {
+                              return _CallAgainBottomBar(
+                                onCallAgain: controller.onCallAgain,
+                              );
+                            }
+                            return const SizedBox(height: 120);
+                          }),
+                          SizedBox(
+                            height: showFixedBottomAd
+                                ? _callBottomNativeReserve(context)
+                                : 32,
+                          ),
+                        ],
                       ),
-                      Container(
-                        color: AppColors.black.withValues(alpha: 0.35),
-                      ),
-                      SafeArea(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(height: 40),
-                            _CallerHeader(controller: controller),
-                            const Spacer(),
-                            Obx(() {
-                              final p = controller.phase.value;
-                              if (p == AudioCallPhase.incoming ||
-                                  p == AudioCallPhase.playing) {
-                                return _BottomCallActions(
-                                  onReject: controller.onReject,
-                                  onAccept: controller.onAccept,
-                                  acceptEnabled: p == AudioCallPhase.incoming &&
-                                      !controller.acceptInProgress.value,
-                                );
-                              }
-                              if (p == AudioCallPhase.ended) {
-                                return _CallAgainBottomBar(
-                                  onCallAgain: controller.onCallAgain,
-                                );
-                              }
-                              return const SizedBox(height: 120);
-                            }),
-                            SizedBox(
-                              height: showFixedBottomAd
-                                  ? _callBottomNativeReserve(context)
-                                  : 32,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                if (showFixedBottomAd)
-                  const Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: _CallBottomNativeAd(),
-                  ),
-              ],
-            ),
+              ),
+              if (showFixedBottomAd)
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: _CallBottomNativeAd(),
+                ),
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }
 
@@ -201,20 +200,22 @@ class _CallerHeader extends StatelessWidget {
 
   static const double _r = 58;
 
-  Widget _avatar(String? networkUrl, String? filePath, String assetFallback) {
+  static const double _faceDiameter = _r * 2;
+
+  /// Square image; [ScallopedAvatarFrame] applies the circular clip.
+  Widget _avatarFace(String? networkUrl, String? filePath, String assetFallback) {
+    final d = _faceDiameter;
     if (networkUrl != null && networkUrl.isNotEmpty) {
-      return ClipOval(
-        child: SizedBox(
-          width: _r * 2,
-          height: _r * 2,
-          child: Image(
-            image: CachedNetworkImageProvider(networkUrl),
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Image.asset(
-              assetFallback,
-              fit: BoxFit.cover,
-            ),
-          ),
+      return Image(
+        image: CachedNetworkImageProvider(networkUrl),
+        fit: BoxFit.cover,
+        width: d,
+        height: d,
+        errorBuilder: (_, __, ___) => Image.asset(
+          assetFallback,
+          fit: BoxFit.cover,
+          width: d,
+          height: d,
         ),
       );
     }
@@ -222,27 +223,24 @@ class _CallerHeader extends StatelessWidget {
         filePath != null &&
         filePath.isNotEmpty &&
         File(filePath).existsSync()) {
-      return ClipOval(
-        child: SizedBox(
-          width: _r * 2,
-          height: _r * 2,
-          child: Image.file(
-            File(filePath),
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Image.asset(
-              assetFallback,
-              fit: BoxFit.cover,
-            ),
-          ),
+      return Image.file(
+        File(filePath),
+        fit: BoxFit.cover,
+        width: d,
+        height: d,
+        errorBuilder: (_, __, ___) => Image.asset(
+          assetFallback,
+          fit: BoxFit.cover,
+          width: d,
+          height: d,
         ),
       );
     }
-    return ClipOval(
-      child: SizedBox(
-        width: _r * 2,
-        height: _r * 2,
-        child: Image.asset(assetFallback, fit: BoxFit.cover),
-      ),
+    return Image.asset(
+      assetFallback,
+      fit: BoxFit.cover,
+      width: d,
+      height: d,
     );
   }
 
@@ -258,16 +256,13 @@ class _CallerHeader extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.white.withValues(alpha: 0.95),
-                width: 2,
-              ),
-            ),
-            child: _avatar(networkUrl, filePath, assetFb),
+          ScallopedAvatarFrame(
+            innerDiameter: _faceDiameter,
+            ringColor: AppColors.white.withValues(alpha: 0.96),
+            ringBaseWidth: 5.6,
+            scallopDepth: 2.85,
+            lobes: 14,
+            child: _avatarFace(networkUrl, filePath, assetFb),
           ),
           const SizedBox(height: 20),
           Text(
@@ -334,7 +329,7 @@ class _CallAgainBottomBar extends StatelessWidget {
         child: FilledButton(
           onPressed: () => onCallAgain(),
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.callAgainPillBlue,
+            backgroundColor: AppColors.primaryColor,
             foregroundColor: AppColors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -370,14 +365,14 @@ class _BottomCallActions extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _CallButton(
-            color: const Color(0xFFE02424),
+            color: AppColors.audioCallDecline,
             icon: Icons.call_end_rounded,
             label: 'call_reject'.tr,
             enabled: true,
             onTap: () => onReject(),
           ),
           _CallButton(
-            color: const Color(0xFF16A34A),
+            color: AppColors.audioCallAccept,
             icon: Icons.call_rounded,
             label: 'call_accept'.tr,
             enabled: acceptEnabled,

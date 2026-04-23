@@ -7,6 +7,28 @@ class AppColors {
   /// Registered in [pubspec.yaml] under `assets/fonts/`.
   static const String fontFamily = 'Roboto';
 
+  /////New Design///
+  static const Color primaryColor = Color(0xFFB267FF);
+  static const Color backgroundColor = Color(0xFFF8F9FB);
+  static const Color premiumColor = Color(0xFFFD9149);
+
+  // Home "Main Features" card gradients.
+  static const LinearGradient featureVideoGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFD476FF), Color(0xFF4B3AFF)],
+  );
+  static const LinearGradient featureAudioGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3D6EF1), Color(0xFF34EDC7)],
+  );
+  static const LinearGradient featureMessageGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFDB96A), Color(0xFFF2609E)],
+  );
+
   // —— Neutrals ——
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
@@ -31,6 +53,10 @@ class AppColors {
 
   /// Pill “Call again” on fake audio call screen (muted steel blue).
   static const Color callAgainPillBlue = Color(0xFF5B8FD4);
+
+  /// Incoming audio call — Decline / Accept.
+  static const Color audioCallDecline = Color(0xFFEB5545);
+  static const Color audioCallAccept = Color(0xFF67CE67);
 
   static const LinearGradient appBarGradient = LinearGradient(
     begin: Alignment.centerLeft,
@@ -87,6 +113,6 @@ class AppColors {
   static const Color homeAudioCardColor = Color(0x4DEC4899);
 
   // —— Splash ——
-  static const Color splashProgressTrack = Color(0x667EC8F5);
+  static const Color splashProgressTrack = Color(0xFFDFD4F3);
   static const Color splashTitleShadow = Color(0x33000000);
 }

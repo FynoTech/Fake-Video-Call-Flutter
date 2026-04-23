@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
@@ -23,7 +24,11 @@ class AddNewView extends GetView<AddNewController> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: SvgPicture.asset(
+            'assets/setting/ic_back.svg',
+            width: 22,
+            height: 22,
+          ),
           onPressed: () => Get.back(),
         ),
         actions: [

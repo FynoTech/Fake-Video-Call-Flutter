@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../../../app/theme/app_assets.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/ads/ads_remote_config_service.dart';
 import '../../../core/services/subscription_service.dart';
@@ -15,10 +17,6 @@ import '../controllers/splash_controller.dart';
 class SplashView extends GetView<SplashController> {
   const SplashView({super.key});
 
-  static const _bgAsset = 'assets/splash_bg.png';
-  static const _iconAsset = 'assets/ic_splash.png';
-  static const _splashSvgAsset = 'assets/splash.svg';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,8 +24,8 @@ class SplashView extends GetView<SplashController> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            _bgAsset,
+          SvgPicture.asset(
+            AppAssets.icSplashBg,
             fit: BoxFit.cover,
             width: MediaQuery.sizeOf(context).width,
             height: MediaQuery.sizeOf(context).height,
@@ -45,27 +43,20 @@ class SplashView extends GetView<SplashController> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
-                        _iconAsset,
-                        width: 132,
-                        height: 132,
+                        AppAssets.icSplash,
+                        width: 231,
+                        height: 231,
                         fit: BoxFit.contain,
                       ),
-                      //const SizedBox(height: 12),
-                      // SvgPicture.asset(
-                      //   _splashSvgAsset,
-                      //   height: 34,
-                      //   fit: BoxFit.contain,
-                      // ),
-                      //const SizedBox(height: 20),
-                      _TitleRow(title: 'splash_title'.tr),
-                      const SizedBox(height: 12),
+
+                      // _TitleRow(title: 'splash_title'.tr),
                       Text(
                         'splash_tagline'.tr,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppColors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14,
                           height: 1.3,
                         ),
                       ),
@@ -93,15 +84,20 @@ class SplashView extends GetView<SplashController> {
                               height: 52,
                               child: Material(
                                 color: AppColors.transparent,
-                                borderRadius: BorderRadius.circular(28),
+                                borderRadius: BorderRadius.circular(16),
                                 clipBehavior: Clip.antiAlias,
                                 child: InkWell(
                                   onTap: busy
                                       ? null
                                       : controller.onGetStartedTap,
                                   child: Ink(
-                                    decoration: const BoxDecoration(
-                                      gradient: AppColors.appBarGradient,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      border: Border.all(
+                                        color: AppColors.black,
+                                        width: 1.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Center(
                                       child: Text(
@@ -124,10 +120,10 @@ class SplashView extends GetView<SplashController> {
                           borderRadius: BorderRadius.circular(6),
                           child: LinearProgressIndicator(
                             value: controller.progress.value,
-                            minHeight: 6,
+                            minHeight: 8,
                             backgroundColor: AppColors.splashProgressTrack,
                             valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.gradientAppBarEnd,
+                              AppColors.primaryColor,
                             ),
                           ),
                         );

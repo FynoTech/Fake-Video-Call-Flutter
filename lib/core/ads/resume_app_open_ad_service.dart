@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -31,8 +32,11 @@ class ResumeAppOpenAdService with WidgetsBindingObserver {
   int _externalResumeSuppressions = 0;
   DateTime? _pausedAt;
   DateTime? _lastShownAt;
+  bool get _isIos => !kIsWeb && Platform.isIOS;
 
   Future<ResumeAppOpenAdService> init() async {
+    // Product requirement: do not show resume app-open ads on iOS.
+    if (_isIos) return this;
     WidgetsBinding.instance.addObserver(this);
     return this;
   }
@@ -51,6 +55,7 @@ class ResumeAppOpenAdService with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_isIos) return;
     if (state == AppLifecycleState.paused) {
       _wasPaused = true;
       _pausedAt = DateTime.now();

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/services/subscription_service.dart';
-import '../../../widgets/gradient_app_bar.dart';
 import '../../settings/views/settings_view.dart';
 import '../controllers/home_controller.dart';
 import 'home_custom_call_tab.dart';
@@ -24,7 +23,16 @@ class HomeView extends GetView<HomeController> {
         return 'settings_title'.tr;
       case 0:
       default:
-        return 'app_name'.tr;
+        return 'feature_video_title'.tr;
+    }
+  }
+
+  String? _subtitleForTab(int index) {
+    switch (index.clamp(0, 2)) {
+      case 0:
+        return 'home_video_subtitle'.tr;
+      default:
+        return null;
     }
   }
 
@@ -37,42 +45,98 @@ class HomeView extends GetView<HomeController> {
         if (didPop) return;
         unawaited(controller.handleHomeBackPressed());
       },
-      child: Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: Obx(
-            () => GradientAppBar(
-              title: _titleForTab(controller.bottomNavIndex.value),
-              centerTitle: false,
-              automaticallyImplyLeading: false,
-              leading: const SizedBox.shrink(),
-              leadingWidth: 0,
-              actions: subscription.isPremium.value
-                  ? const []
-                  : [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: IconButton(
-                          onPressed: () => Get.toNamed(AppRoutes.premium),
-                          icon: Image.asset(
-                            'assets/premium/premium_crown.png',
-                            width: 35,
-                            height: 35,
-                            fit: BoxFit.contain,
-                          ),
-                          tooltip: 'settings_premium_title'.tr,
+      child: Obx(() {
+        final index = controller.bottomNavIndex.value.clamp(0, 2);
+        final title = _titleForTab(index);
+        final subtitle = _subtitleForTab(index);
+        final isPremium = subscription.isPremium.value;
+        return Scaffold(
+          backgroundColor: AppColors.backgroundColor,
+          appBar: AppBar(
+            backgroundColor: AppColors.backgroundColor,
+            surfaceTintColor: AppColors.backgroundColor,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: false,
+            automaticallyImplyLeading: false,
+            toolbarHeight: 84,
+            titleSpacing: 20,
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontFamily: 'Audiowide',
+                    fontSize: 24,
+                    color: AppColors.black,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                if (subtitle != null && subtitle.isNotEmpty)
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black.withValues(alpha: 0.45),
+                    ),
+                  ),
+              ],
+            ),
+            actions: isPremium
+                ? [
+                    IconButton(
+                      onPressed: () => controller.selectBottomNav(2),
+                      icon: SvgPicture.asset(
+                        'assets/c_settings.svg',
+                        width: 22,
+                        height: 22,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.black,
+                          BlendMode.srcIn,
                         ),
                       ),
-                    ],
-            ),
+                      tooltip: 'settings_title'.tr,
+                    ),
+                    const SizedBox(width: 6),
+                  ]
+                : [
+                    IconButton(
+                      onPressed: () => Get.toNamed(AppRoutes.premium),
+                      icon: Image.asset(
+                        'assets/premium/premium_crown.png',
+                        width: 35,
+                        height: 35,
+                        fit: BoxFit.contain,
+                      ),
+                      tooltip: 'settings_premium_title'.tr,
+                    ),
+                    IconButton(
+                      onPressed: () => controller.selectBottomNav(2),
+                      icon: SvgPicture.asset(
+                        'assets/c_settings.svg',
+                        width: 22,
+                        height: 22,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.black,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      tooltip: 'settings_title'.tr,
+                    ),
+                    const SizedBox(width: 6),
+                  ],
           ),
-        ),
-        body: SafeArea(
-          bottom: false,
-          child: Obx(
-            () => IndexedStack(
-              index: controller.bottomNavIndex.value.clamp(0, 2),
+          body: SafeArea(
+            bottom: false,
+            child: IndexedStack(
+              index: index,
               sizing: StackFit.expand,
               children: const [
                 HomeVideoCallTab(),
@@ -81,82 +145,73 @@ class HomeView extends GetView<HomeController> {
               ],
             ),
           ),
-        ),
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: Obx(
-            () => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Color(0xFFE1E1E1), width: 1),
-                    ),
-                  ),
-                  child: NavigationBar(
-                    height: 78,
-                    selectedIndex: controller.bottomNavIndex.value.clamp(0, 2),
-                    onDestinationSelected: controller.selectBottomNav,
-                    backgroundColor: AppColors.white,
-                    surfaceTintColor: AppColors.white,
-                    shadowColor: Colors.transparent,
-                    elevation: 0,
-                    indicatorColor: Colors.transparent,
-                    labelTextStyle: WidgetStateProperty.resolveWith((states) {
-                      final selected = states.contains(WidgetState.selected);
-                      return TextStyle(
-                        color: selected
-                            ? const Color(0xFF58A8DB)
-                            : const Color(0xFFB3B3B3),
-                        fontWeight: selected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        fontSize: 12,
-                      );
-                    }),
-                    destinations: [
-                      NavigationDestination(
-                        icon: _BottomNavSvgIcon(
-                          assetPath: 'assets/ic_videocall.svg',
-                          selected: false,
-                        ),
-                        selectedIcon: _BottomNavSvgIcon(
-                          assetPath: 'assets/ic_videocall.svg',
-                          selected: true,
-                        ),
-                        label: 'nav_video_call'.tr,
-                      ),
-                      NavigationDestination(
-                        icon: _BottomNavSvgIcon(
-                          assetPath: 'assets/ic_call.svg',
-                          selected: false,
-                        ),
-                        selectedIcon: _BottomNavSvgIcon(
-                          assetPath: 'assets/ic_call.svg',
-                          selected: true,
-                        ),
-                        label: 'nav_custom_call'.tr,
-                      ),
-                      NavigationDestination(
-                        icon: _BottomNavSvgIcon(
-                          assetPath: 'assets/c_settings.svg',
-                          selected: false,
-                        ),
-                        selectedIcon: _BottomNavSvgIcon(
-                          assetPath: 'assets/c_settings.svg',
-                          selected: true,
-                        ),
-                        label: 'nav_settings'.tr,
-                      ),
-                    ],
-                  ),
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Color(0xFFE1E1E1), width: 1),
                 ),
-              ],
+              ),
+              child: NavigationBar(
+                height: 78,
+                selectedIndex: index,
+                onDestinationSelected: controller.selectBottomNav,
+                backgroundColor: AppColors.white,
+                surfaceTintColor: AppColors.white,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                indicatorColor: Colors.transparent,
+                labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                  final selected = states.contains(WidgetState.selected);
+                  return TextStyle(
+                    color: selected
+                        ? const Color(0xFF58A8DB)
+                        : const Color(0xFFB3B3B3),
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    fontSize: 12,
+                  );
+                }),
+                destinations: [
+                  NavigationDestination(
+                    icon: _BottomNavSvgIcon(
+                      assetPath: 'assets/ic_videocall.svg',
+                      selected: false,
+                    ),
+                    selectedIcon: _BottomNavSvgIcon(
+                      assetPath: 'assets/ic_videocall.svg',
+                      selected: true,
+                    ),
+                    label: 'nav_video_call'.tr,
+                  ),
+                  NavigationDestination(
+                    icon: _BottomNavSvgIcon(
+                      assetPath: 'assets/ic_call.svg',
+                      selected: false,
+                    ),
+                    selectedIcon: _BottomNavSvgIcon(
+                      assetPath: 'assets/ic_call.svg',
+                      selected: true,
+                    ),
+                    label: 'nav_custom_call'.tr,
+                  ),
+                  NavigationDestination(
+                    icon: _BottomNavSvgIcon(
+                      assetPath: 'assets/c_settings.svg',
+                      selected: false,
+                    ),
+                    selectedIcon: _BottomNavSvgIcon(
+                      assetPath: 'assets/c_settings.svg',
+                      selected: true,
+                    ),
+                    label: 'nav_settings'.tr,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

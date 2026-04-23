@@ -38,7 +38,11 @@ class AddVideoPersonView extends GetView<AddVideoPersonController> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: SvgPicture.asset(
+            'assets/setting/ic_back.svg',
+            width: 22,
+            height: 22,
+          ),
           onPressed: () => Get.back(),
         ),
       ),

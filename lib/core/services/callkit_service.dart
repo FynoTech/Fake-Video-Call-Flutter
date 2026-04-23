@@ -31,7 +31,7 @@ class CallkitService extends GetxService {
       type: 1,
       duration: 30000,
       textAccept: 'Accept',
-      textDecline: 'Reject',
+      textDecline: 'Decline',
       extra: <String, dynamic>{
         'storageFolderPath': person.storageFolderPath,
       },
