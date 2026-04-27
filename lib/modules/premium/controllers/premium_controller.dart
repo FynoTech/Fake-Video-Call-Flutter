@@ -84,4 +84,22 @@ class PremiumController extends GetxController {
     Get.snackbar('Privacy', 'Open your Privacy Policy URL here.',
         snackPosition: SnackPosition.BOTTOM);
   }
+
+  Future<void> restorePurchases() async {
+    try {
+      await _iap.restorePurchases();
+      await _subscription.refreshEntitlement();
+      Get.snackbar(
+        'Restore',
+        'Restore request sent successfully.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (_) {
+      Get.snackbar(
+        'Restore',
+        'Unable to restore purchases right now.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
 }

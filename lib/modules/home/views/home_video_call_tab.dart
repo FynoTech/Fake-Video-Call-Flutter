@@ -33,16 +33,13 @@ class HomeVideoCallTab extends GetView<HomeController> {
       final trending = preview.take(3).toList();
       final topNativeFactory =
           isPremium ? null : _pickNativeFactoryIdForHomeTop(ads);
-      // TODO(testing): home ads commented out – restore before release.
-      // final showTopSlot =
-      //     !isPremium && (ads.homeTopBannerOn || topNativeFactory != null);
-      const showTopSlot = false;
+      final showTopSlot =
+          !isPremium && (ads.homeTopBannerOn || topNativeFactory != null);
       final topNativeHeight = _nativeHeightForFactory(topNativeFactory);
       final bottomNativeFactory =
           isPremium ? null : _pickNativeFactoryIdForHomeInline(ads);
-      // final showBottomSlot =
-      //     !isPremium && (ads.homeBottomBannerOn || bottomNativeFactory != null);
-      const showBottomSlot = false;
+      final showBottomSlot =
+          !isPremium && (ads.homeBottomBannerOn || bottomNativeFactory != null);
       final bottomNativeHeight = _nativeHeightForFactory(bottomNativeFactory);
       final bottomSlotHeight = _slotHeightForHome(
         hasBanner: !isPremium && ads.homeBottomBannerOn,
@@ -64,6 +61,18 @@ class HomeVideoCallTab extends GetView<HomeController> {
                 onTap: () => controller.selectBottomNav(1),
               ),
             ),
+            if (showTopSlot) ...[
+              const SizedBox(height: 12),
+              RaceBannerNativeSlot(
+                bannerEnabled: ads.homeTopBannerOn,
+                nativeEnabled: topNativeFactory != null,
+                bannerUnitId: ads.homeBannerId,
+                nativeUnitId: ads.homeNativeId,
+                debugLabel: 'home_top_slot',
+                nativeFactoryId: topNativeFactory,
+                nativeHeight: topNativeHeight,
+              ),
+            ],
             const SizedBox(height: 18),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -132,18 +141,6 @@ class HomeVideoCallTab extends GetView<HomeController> {
                 ],
               ),
             ),
-            if (showTopSlot) ...[
-              RaceBannerNativeSlot(
-                bannerEnabled: ads.homeTopBannerOn,
-                nativeEnabled: topNativeFactory != null,
-                bannerUnitId: ads.homeBannerId,
-                nativeUnitId: ads.homeNativeId,
-                debugLabel: 'home_top_slot',
-                nativeFactoryId: topNativeFactory,
-                nativeHeight: topNativeHeight,
-              ),
-              const SizedBox(height: 12),
-            ],
             const SizedBox(height: 18),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),

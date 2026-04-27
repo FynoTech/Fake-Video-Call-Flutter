@@ -504,7 +504,7 @@ class CallSchedulerService extends GetxService with WidgetsBindingObserver {
             importance: Importance.max,
             priority: Priority.max,
             category: AndroidNotificationCategory.call,
-            color: AppColors.gradientAppBarEnd,
+            color: AppColors.primaryColor,
             playSound: false,
             enableVibration: false,
             ongoing: true,

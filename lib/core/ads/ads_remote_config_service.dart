@@ -12,8 +12,6 @@ import 'package:flutter/foundation.dart'
         kReleaseMode,
         TargetPlatform;
 
-import '../services/storage_service.dart';
-
 /// Remote Config-backed ads config:
 /// - `ad_ids`: JSON string containing all unit IDs.
 /// - `ads_control`: JSON string containing 0/1 toggles per placement.
@@ -30,8 +28,8 @@ class AdsRemoteConfigService {
   static const String paramIntroAdBgColor = 'intro_ad_bg_color';
   static const String _defaultPrivacyPolicyUrl =
       'https://fynotech.blogspot.com/p/privacy-policy-fake-video-call-prank-app.html';
-  static const String _defaultIntroLargeNativeBtnColor = '#5FAFE0';
-  static const String _defaultIntroAdBgColor = '#2B5FAFE0';
+  static const String _defaultIntroLargeNativeBtnColor = '#B267FF';
+  static const String _defaultIntroAdBgColor = '#2BB267FF';
 
   /// Not a field: [FirebaseRemoteConfig.instance] requires [Firebase.initializeApp] first.
   FirebaseRemoteConfig get _rc => FirebaseRemoteConfig.instance;
@@ -169,18 +167,8 @@ class AdsRemoteConfigService {
 
   // ---- Typed helpers (keep call sites clean) ----
 
-  /// Global master switch (defaults true if not provided).
-  bool get adsEnabled {
-    if (_isPremiumUser()) return false;
-    return flag('global.ads_enabled', defaultValue: true);
-  }
-
-  bool _isPremiumUser() {
-    if (!Get.isRegistered<StorageService>()) return false;
-    final storage = Get.find<StorageService>();
-    if (storage.isPremiumUnlocked) return true;
-    return false;
-  }
+  /// Global master switch (forced OFF for local testing).
+  bool get adsEnabled => true;
 
   // Splash placements
   bool get splashBannerOn => adsEnabled && flag('splash.banner');
@@ -206,6 +194,9 @@ class AdsRemoteConfigService {
   bool get languageInterstitialOn => adsEnabled && flag('language.interstitial');
   bool get languageScreenOn =>
       flag(paramLanguageScreenOnOff, defaultValue: _rcBoolParam(paramLanguageScreenOnOff, defaultValue: true));
+
+  /// AI chat key used by Fake Messaging chatbot (kept in Firebase Remote Config).
+  String get chatBotApiKey => _rc.getString('chat_bot_api').trim();
 
   // Separate placements (top/bottom) so you can control them independently.
   bool get languageTopBannerOn => adsEnabled && flag('language.top.banner');

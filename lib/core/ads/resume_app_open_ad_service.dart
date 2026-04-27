@@ -14,7 +14,7 @@ import 'ads_remote_config_service.dart';
 /// While ad is being prepared/shown, a full-screen "Welcome Back" overlay
 /// is displayed with the same splash icon asset.
 class ResumeAppOpenAdService with WidgetsBindingObserver {
-  static const String _iconAsset = 'assets/ic_splash.png';
+  static const String _iconAsset = 'assets/splash/ic_splash.png';
   static const Duration _showCallTimeout = Duration(seconds: 3);
   static const Duration _noPresentationGrace = Duration(milliseconds: 1600);
   static const Duration _adLoadWait = Duration(seconds: 4);
@@ -164,41 +164,52 @@ class ResumeAppOpenAdService with WidgetsBindingObserver {
     _suppressNextResume = true;
     final completer = Completer<void>();
     var presentationConfirmed = false;
+    var terminalCallbackReceived = false;
+
+    void completeFlow() {
+      if (!completer.isCompleted) completer.complete();
+    }
+
+    void disposeSafely(AppOpenAd target) {
+      if (terminalCallbackReceived) return;
+      terminalCallbackReceived = true;
+      try {
+        target.dispose();
+      } catch (_) {}
+    }
 
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdShowedFullScreenContent: (shownAd) {
         presentationConfirmed = true;
       },
       onAdDismissedFullScreenContent: (dismissedAd) {
-        dismissedAd.dispose();
-        if (!completer.isCompleted) completer.complete();
+        disposeSafely(dismissedAd);
+        completeFlow();
       },
       onAdFailedToShowFullScreenContent: (failedAd, error) {
         debugPrint(
           '[Ads][resume_app_open] failed to show (${error.code}) ${error.message}',
         );
-        failedAd.dispose();
-        if (!completer.isCompleted) completer.complete();
+        disposeSafely(failedAd);
+        completeFlow();
       },
     );
 
     try {
       await ad.show().timeout(_showCallTimeout, onTimeout: () {});
     } catch (_) {
-      try {
-        ad.dispose();
-      } catch (_) {}
-      if (!completer.isCompleted) completer.complete();
+      // Some WebView-backed ad internals may still dispatch callbacks briefly.
+      // Avoid force-dispose in this catch path to prevent destroyed-WebView races.
+      completeFlow();
     }
 
     if (!completer.isCompleted) {
       Timer? bail;
       bail = Timer(_noPresentationGrace, () {
         if (!presentationConfirmed && !completer.isCompleted) {
-          try {
-            ad.dispose();
-          } catch (_) {}
-          completer.complete();
+          // Don't force dispose if presentation wasn't confirmed yet; the SDK can still
+          // dispatch async callbacks and that may trigger destroyed-WebView warnings.
+          completeFlow();
         }
         bail?.cancel();
       });

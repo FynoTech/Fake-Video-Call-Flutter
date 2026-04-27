@@ -10,6 +10,7 @@ abstract class AppRoutes {
   static const addVideoPerson = '/add_video_person';
   static const audioCall = '/audio_call';
   static const videoCall = '/video_call';
+  static const scheduleCall = '/schedule_call';
   static const settings = '/settings';
   static const premium = '/premium';
   static const exitApp = '/exit_app';

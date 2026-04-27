@@ -9,10 +9,8 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/localization/vfc_category_localization.dart';
 import '../../../core/models/person_item.dart';
 import '../../../core/models/vfc_celebrity_catalog.dart';
-import '../../../core/services/network_reachability.dart';
 import '../../../core/services/subscription_service.dart';
 import '../../../widgets/app_shimmer.dart';
-import '../../../widgets/person_circle_tile.dart';
 
 /// Category tabs + celebrity grid driven by [VfcCelebrityCatalog].
 class VfcCelebritiesSection extends StatelessWidget {
@@ -249,15 +247,12 @@ class VfcCelebritiesSection extends StatelessWidget {
             );
           }
 
-          return PersonCircleTile(
-            label: _tileLabel(person: person, category: category),
+          return TrendingCelebrityCard(
+            name: _tileLabel(person: person, category: category),
             imageUrl: person.imageUrl,
-            avatarSize: avatarSize,
-            showAvatarBorder: false,
-            maxLabelLines: 2,
-            labelColor: AppColors.black,
-            avatarBadge: showVideoBadge ? const _VideoCornerBadge() : null,
-            needsNetworkForMedia: isRemoteMediaUrl(person.videoUrl),
+            gradient: kTrendingGradients[index % kTrendingGradients.length],
+            showOnlineDot: true,
+            showVideoBadge: showVideoBadge,
             onTap: handleTap,
           );
         });
@@ -277,28 +272,6 @@ class VfcCelebritiesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [tabRow, grid],
-    );
-  }
-}
-
-class _VideoCornerBadge extends StatelessWidget {
-  const _VideoCornerBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: AppColors.gradientAppBarEnd,
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.white, width: 1.2),
-      ),
-      child: const Icon(
-        Icons.videocam_rounded,
-        size: 12,
-        color: AppColors.white,
-      ),
     );
   }
 }

@@ -23,6 +23,7 @@ class StorageService extends GetxService {
   static const keyPermissionRationaleCompleted = 'permission_rationale_completed';
   static const keyStartupPermissionsRequested = 'startup_permissions_requested';
   static const keyPremiumUnlocked = 'premium_unlocked';
+  static const keyCallReviews = 'call_reviews';
 
   String? get languageCode => _box.read<String>(keyLanguageCode);
 
@@ -123,5 +124,23 @@ class StorageService extends GetxService {
 
   Future<void> setPremiumUnlocked(bool value) async {
     await _box.write(keyPremiumUnlocked, value);
+  }
+
+  List<Map<String, dynamic>> get callReviews {
+    final raw = _box.read<List<dynamic>>(keyCallReviews) ?? const <dynamic>[];
+    return raw
+        .whereType<Map>()
+        .map(
+          (e) => e.map(
+            (key, value) => MapEntry(key.toString(), value),
+          ),
+        )
+        .toList();
+  }
+
+  Future<void> addCallReview(Map<String, dynamic> review) async {
+    final current = callReviews;
+    current.add(review);
+    await _box.write(keyCallReviews, current);
   }
 }

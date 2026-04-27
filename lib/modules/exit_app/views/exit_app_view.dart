@@ -21,19 +21,7 @@ class ExitAppView extends StatelessWidget {
     final showAd = topHasAny || bottomHasAny;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        surfaceTintColor: AppColors.backgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: false,
-        title: Text(
-          'Exit Screen',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(color: AppColors.black),
-        ),
-      ),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -77,24 +65,17 @@ class ExitAppView extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Prank Fake Video Call',
+                          'app_name'.tr,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: AppColors.black,
-                            fontSize: 40,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(
+                                color: AppColors.black,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                              ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          'Realistic fake video calls-prank your friends and capture priceless reactions! 😂📱',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.black.withValues(alpha: 0.32),
-                            fontSize: 13,
-                            height: 1.35,
-                          ),
-                        ),
+
                         const SizedBox(height: 18),
                         SizedBox(
                           width: double.infinity,
@@ -108,8 +89,8 @@ class ExitAppView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(40),
                               ),
                             ),
-                            child: const Text(
-                              'Try Now',
+                            child: Text(
+                              'exit_try_now'.tr,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -123,7 +104,8 @@ class ExitAppView extends StatelessWidget {
                   const SizedBox(height: 8),
                   if (showAd)
                     RaceBannerNativeSlot(
-                      bannerEnabled: ads.exitBottomBannerOn || ads.exitTopBannerOn,
+                      bannerEnabled:
+                          ads.exitBottomBannerOn || ads.exitTopBannerOn,
                       nativeEnabled: adFactory != null,
                       bannerUnitId: ads.exitBannerId,
                       nativeUnitId: ads.exitNativeId,
@@ -137,18 +119,23 @@ class ExitAppView extends StatelessWidget {
             GestureDetector(
               onTap: () async => SystemNavigator.pop(),
               child: Container(
-                color: const Color(0xFFE2CCF3),
+                color: const Color(0xB2E6E7E7),
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.sentiment_very_dissatisfied_rounded, size: 34),
+                      Image.asset(
+                        'assets/exit/ic_close_app_custom.png',
+                        width: 32,
+                        height: 32,
+                        fit: BoxFit.contain,
+                      ),
                       const SizedBox(width: 10),
                       Text(
-                        'Close the App',
+                        'exit_close_app_action'.tr,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.black,
+                          color: Color(0xff9F9F9F),
                           fontWeight: FontWeight.w700,
                         ),
                       ),

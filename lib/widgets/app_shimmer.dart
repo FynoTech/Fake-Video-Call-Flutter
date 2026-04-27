@@ -3,10 +3,10 @@ import 'package:shimmer/shimmer.dart';
 
 import '../app/theme/app_colors.dart';
 
-// Grey native-ad placeholder (used by [ShimmerAdLayout] + body stubs).
-const Color _kAdShimmerCardBg = Color(0xFFE4E7EC);
-const Color _kAdShimmerBlock = Color(0xFFC5CBD4);
-const Color _kAdShimmerHighlight = Color(0xFFF2F4F8);
+// Native-ad shimmer palette aligned with splash button theme.
+const Color _kAdShimmerCardBg = Color(0xFFF4EBFF);
+const Color _kAdShimmerBlock = Color(0xFFB267FF);
+const Color _kAdShimmerHighlight = Color(0xFFD8A9FF);
 
 /// App-wide shimmer using the same cool blue-gray palette as feature cards.
 class AppShimmer extends StatelessWidget {
@@ -33,36 +33,39 @@ class ShimmerLiveVideoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppShimmer(
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: itemCount,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (_, __) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: const BoxDecoration(
-                  color: AppColors.shimmerBase,
-                  shape: BoxShape.circle,
+    return SizedBox(
+      height: 82,
+      child: AppShimmer(
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.zero,
+          itemCount: itemCount,
+          separatorBuilder: (_, __) => const SizedBox(width: 16),
+          itemBuilder: (_, __) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: const BoxDecoration(
+                    color: AppColors.shimmerBase,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: 52,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: AppColors.shimmerBase,
-                  borderRadius: BorderRadius.circular(6),
+                const SizedBox(height: 10),
+                Container(
+                  width: 52,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: AppColors.shimmerBase,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -519,7 +522,7 @@ class _ShimmerAdBadge extends StatelessWidget {
         vertical: compact ? 4 : 5,
       ),
       decoration: BoxDecoration(
-        color: AppColors.gradientAppBarEnd,
+        color: AppColors.primaryColor,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
@@ -542,22 +545,15 @@ class _ShimmerInstallCta extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            AppColors.gradientAppBarMid,
-            AppColors.gradientAppBarEnd.withValues(alpha: 0.95),
-            const Color(0xFF5C4A9E),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
+        color: AppColors.primaryColor,
+        border: Border.all(color: AppColors.black, width: 1.5),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Center(
         child: Text(
           'Install',
           style: TextStyle(
-            color: AppColors.white.withValues(alpha: 0.92),
+            color: AppColors.white,
             fontSize: 13,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.2,

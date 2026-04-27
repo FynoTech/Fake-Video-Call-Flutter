@@ -10,76 +10,92 @@ import '../../../core/services/storage_service.dart';
 class LanguageOption {
   const LanguageOption({
     required this.code,
-    required this.label,
+    required this.labelKey,
     required this.locale,
-    required this.flagAsset,
+    required this.flagAssetPath,
   });
 
   final String code;
-  final String label;
+  final String labelKey;
   final Locale locale;
 
-  /// Your assets under `assets/lang/` (e.g. `ic_eng.png`, `ic_french.png`).
-  final String flagAsset;
+  /// Flat flag icon shown on language list.
+  final String flagAssetPath;
 
+  /// Shown on the language screen in this order: Hindi, Spanish, Portuguese, English,
+  /// Arabic, Russian, German, Chinese, Bengali, Turkish.
   static const List<LanguageOption> all = [
     LanguageOption(
-      code: 'fr_FR',
-      label: 'French',
-      locale: Locale('fr', 'FR'),
-      flagAsset: 'assets/lang/ic_french.png',
+      code: 'hi_IN',
+      labelKey: 'language_name_hindi',
+      locale: Locale('hi', 'IN'),
+      flagAssetPath: 'assets/lang/flag_hi_flat.png',
     ),
     LanguageOption(
       code: 'es_ES',
-      label: 'Spanish',
+      labelKey: 'language_name_spanish',
       locale: Locale('es', 'ES'),
-      flagAsset: 'assets/lang/ic_spanish.png',
-    ),
-    LanguageOption(
-      code: 'uk_UA',
-      label: 'Ukrainian',
-      locale: Locale('uk', 'UA'),
-      flagAsset: 'assets/lang/ic_ukr.png',
-    ),
-    LanguageOption(
-      code: 'en_US',
-      label: 'English',
-      locale: Locale('en', 'US'),
-      flagAsset: 'assets/lang/ic_eng.png',
-    ),
-    LanguageOption(
-      code: 'de_DE',
-      label: 'German',
-      locale: Locale('de', 'DE'),
-      flagAsset: 'assets/lang/ic_german.png',
-    ),
-    LanguageOption(
-      code: 'zh_CN',
-      label: 'Chinese',
-      locale: Locale('zh', 'CN'),
-      flagAsset: 'assets/lang/ic_chinese.png',
+      flagAssetPath: 'assets/lang/flag_es_flat.png',
     ),
     LanguageOption(
       code: 'pt_BR',
-      label: 'Brazil',
+      labelKey: 'language_name_portuguese',
       locale: Locale('pt', 'BR'),
-      flagAsset: 'assets/lang/ic_brazil.png',
+      flagAssetPath: 'assets/lang/flag_pt_flat.png',
+    ),
+    LanguageOption(
+      code: 'en_US',
+      labelKey: 'language_name_english',
+      locale: Locale('en', 'US'),
+      flagAssetPath: 'assets/lang/flag_en_flat.png',
+    ),
+    LanguageOption(
+      code: 'ar_SA',
+      labelKey: 'language_name_arabic',
+      locale: Locale('ar', 'SA'),
+      flagAssetPath: 'assets/lang/flag_ar_flat.png',
+    ),
+    LanguageOption(
+      code: 'ru_RU',
+      labelKey: 'language_name_russian',
+      locale: Locale('ru', 'RU'),
+      flagAssetPath: 'assets/lang/flag_ru_flat.png',
+    ),
+    LanguageOption(
+      code: 'de_DE',
+      labelKey: 'language_name_german',
+      locale: Locale('de', 'DE'),
+      flagAssetPath: 'assets/lang/flag_de_flat.png',
+    ),
+    LanguageOption(
+      code: 'zh_CN',
+      labelKey: 'language_name_chinese',
+      locale: Locale('zh', 'CN'),
+      flagAssetPath: 'assets/lang/flag_cn_flat.png',
+    ),
+    LanguageOption(
+      code: 'bn_BD',
+      labelKey: 'language_name_bengali',
+      locale: Locale('bn', 'BD'),
+      flagAssetPath: 'assets/lang/flag_bd_flat.png',
     ),
     LanguageOption(
       code: 'tr_TR',
-      label: 'Turkey',
+      labelKey: 'language_name_turkish',
       locale: Locale('tr', 'TR'),
-      flagAsset: 'assets/lang/ic_turkey.png',
+      flagAssetPath: 'assets/lang/flag_tr_flat.png',
     ),
   ];
 
+  String get label => labelKey.tr;
+
   /// Label shown in settings; matches [StorageService.languageCode] / [all] entries.
   static String labelForStoredCode(String? code) {
-    if (code == null || code.isEmpty) return 'English';
+    if (code == null || code.isEmpty) return 'language_name_english'.tr;
     for (final o in all) {
       if (o.code == code) return o.label;
     }
-    return 'English';
+    return 'language_name_english'.tr;
   }
 }
 

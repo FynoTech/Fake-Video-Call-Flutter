@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,48 +8,59 @@ import 'package:get/get.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/localization/vfc_category_localization.dart';
 import '../../../widgets/app_loading_indicator.dart';
-import '../../../widgets/gradient_app_bar.dart';
 import '../controllers/add_video_person_controller.dart';
 
 class AddVideoPersonView extends GetView<AddVideoPersonController> {
   const AddVideoPersonView({super.key});
 
-  static const Color _fieldBorder = Color(0xFFD9D1D1);
   static const Color _avatarBg = Color(0xFFEDEDED);
   static const Color _uploadCircleBg = Color(0xFFE6E4E4);
   static const Color _uploadRed = Color(0xFFE20018);
 
   static const String _kEditFabSvg = 'assets/add_new/edit_fab.svg';
   static const String _kPersonSvg = 'assets/add_new/person_silhouette.svg';
+  static const String _kCallerSvg = 'assets/add_new/ic_caller.svg';
+  static const String _kPhoneSvg = 'assets/add_new/phone.svg';
   static const String _kUploadArrowSvg = 'assets/add_new/upload_arrow.svg';
+  static const String _kNoImageSvg = 'assets/add_new/no_image.svg';
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w600,
+    final titleStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
+      fontWeight: FontWeight.w700,
       color: AppColors.black,
-      fontSize: 16,
-      fontFamily: "Roboto",
+      fontSize: 22,
     );
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: GradientAppBar(
-        title: 'add_new_title'.tr,
-        centerTitle: true,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text('add_new_title'.tr),
+        centerTitle: false,
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/setting/ic_back.svg',
+            matchTextDirection: true,
             width: 22,
             height: 22,
           ),
           onPressed: () => Get.back(),
         ),
+        titleTextStyle: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: AppColors.black,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Audiowide',
+              fontSize: 24,
+              letterSpacing: 0.2,
+            ),
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ListView(
             padding: const EdgeInsets.only(top: 8, bottom: 28),
             children: [
@@ -69,14 +81,17 @@ class AddVideoPersonView extends GetView<AddVideoPersonController> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   hintText: 'caller_name'.tr,
-                  hintStyle: TextStyle(color: AppColors.textMuted45),
+                  hintStyle: TextStyle(
+                    color: AppColors.black.withValues(alpha: 0.72),
+                    fontWeight: FontWeight.w500,
+                  ),
                   prefixIcon: Padding(
                     padding: const EdgeInsets.only(left: 12, right: 4),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       widthFactor: 1,
                       child: SvgPicture.asset(
-                        _kPersonSvg,
+                        _kCallerSvg,
                         height: 24,
                         width: 24 * (109 / 97),
                         fit: BoxFit.contain,
@@ -88,22 +103,28 @@ class AddVideoPersonView extends GetView<AddVideoPersonController> {
                     minHeight: 48,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _fieldBorder),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _fieldBorder),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(22),
                     borderSide: BorderSide(
-                      color: AppColors.gradientAppBarMid,
-                      width: 1.5,
+                      color: AppColors.primaryColor,
+                      width: 1.2,
                     ),
                   ),
-                  filled: false,
-                  fillColor: const Color(0xFFF5F5F5),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22),
+                    borderSide: BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 1.2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22),
+                    borderSide: BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 1.2,
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0x1A615EF0),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                     vertical: 14,
@@ -119,83 +140,94 @@ class AddVideoPersonView extends GetView<AddVideoPersonController> {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: AppColors.white,
-                    border: Border.all(color: _fieldBorder),
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0x1A615EF0),
+                    borderRadius: BorderRadius.circular(22),
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<AddPersonCategory>(
-                      value: selected,
-                      isExpanded: true,
-                      menuMaxHeight: 360,
-                      hint: Text(
-                        'choose_category'.tr,
-                        style: TextStyle(color: AppColors.textMuted45),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        _kPhoneSvg,
+                        height: 22,
+                        width: 22,
+                        fit: BoxFit.contain,
                       ),
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: AppColors.black,
-                        size: 32,
-                      ),
-                      selectedItemBuilder: (ctx) => items
-                          .map(
-                            (e) => Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                localizedVfcCategoryName(e.id, e.name),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.w500,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<AddPersonCategory>(
+                            value: selected,
+                            isExpanded: true,
+                            menuMaxHeight: 360,
+                            hint: Text(
+                              'choose_category'.tr,
+                              style: TextStyle(color: AppColors.textMuted45),
+                            ),
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Colors.black54,
+                              size: 32,
+                            ),
+                            selectedItemBuilder: (ctx) => items
+                                .map(
+                                  (e) => Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      localizedVfcCategoryName(e.id, e.name),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                     ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      items: items
-                          .map(
-                            (e) => DropdownMenuItem<AddPersonCategory>(
-                              value: e,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    selected?.id == e.id
-                                        ? Icons.radio_button_checked
-                                        : Icons.radio_button_off,
-                                    color: selected?.id == e.id
-                                        ? AppColors.gradientAppBarMid
-                                        : AppColors.textMuted45,
-                                    size: 18,
                                   ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    localizedVfcCategoryName(e.id, e.name),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: AppColors.black,
-                                          fontWeight: FontWeight.w500,
+                                )
+                                .toList(),
+                            items: items
+                                .map(
+                                  (e) => DropdownMenuItem<AddPersonCategory>(
+                                    value: e,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          selected?.id == e.id
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_off,
+                                          color: selected?.id == e.id
+                                              ? AppColors.primaryColor
+                                              : AppColors.textMuted45,
+                                          size: 18,
                                         ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          localizedVfcCategoryName(e.id, e.name),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: AppColors.black,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (next) {
-                        if (next == null) return;
-                        controller.selectedCategory.value = next;
-                      },
-                    ),
+                                )
+                                .toList(),
+                            onChanged: (next) {
+                              if (next == null) return;
+                              controller.selectedCategory.value = next;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }),
               const SizedBox(height: 22),
-              Text('video_call_short'.tr, style: titleStyle),
-              const SizedBox(height: 18),
+              const SizedBox(height: 4),
               Obx(() {
                 final v = controller.videoFile.value;
                 return Column(
@@ -206,6 +238,7 @@ class AddVideoPersonView extends GetView<AddVideoPersonController> {
                       circleBg: _uploadCircleBg,
                       uploadRed: _uploadRed,
                       uploadArrowAsset: _kUploadArrowSvg,
+                      noImageAsset: _kNoImageSvg,
                     ),
                     if (v != null) ...[
                       const SizedBox(height: 10),
@@ -235,10 +268,9 @@ class AddVideoPersonView extends GetView<AddVideoPersonController> {
                       onTap: busy ? null : () => controller.upload(),
                       child: Ink(
                         decoration: BoxDecoration(
-                          gradient: busy
-                              ? null
-                              : AppColors.onboardingNextButtonGradient,
-                          color: busy ? AppColors.textMuted45 : null,
+                          color: busy
+                              ? AppColors.textMuted45
+                              : AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(130),
                         ),
                         child: Center(
@@ -306,43 +338,36 @@ class _PhotoAvatarHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: 124,
-        height: 124,
+        width: 150,
+        height: 150,
         child: Stack(
           clipBehavior: Clip.none,
           alignment: Alignment.center,
           children: [
-            Material(
-              // color: avatarBg,
-              shape: const CircleBorder(),
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: onPickPhoto,
-                customBorder: const CircleBorder(),
-                child: Ink(
-                  width: 112,
-                  height: 112,
-                  child: photo == null
-                      ? Center(
-                          child: SvgPicture.asset(
-                            personSvgAsset,
-                            // height: 56,
-                            // width: 56 * (109 / 97),
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Image.file(
-                          photo!,
-                          width: 112,
-                          height: 112,
-                          fit: BoxFit.cover,
-                        ),
+            ClipPath(
+              clipper: _ScallopClipper(),
+              child: Material(
+                color: avatarBg,
+                child: InkWell(
+                  onTap: onPickPhoto,
+                  child: SizedBox(
+                    width: 132,
+                    height: 132,
+                    child: photo == null
+                        ? Center(
+                            child: SvgPicture.asset(
+                              personSvgAsset,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.file(photo!, fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
             Positioned(
-              right: -4,
-              bottom: -4,
+              right: 18,
+              bottom: 14,
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -385,6 +410,7 @@ class _VideoUploadCircle extends StatelessWidget {
     required this.circleBg,
     required this.uploadRed,
     required this.uploadArrowAsset,
+    required this.noImageAsset,
   });
 
   final File? video;
@@ -392,96 +418,133 @@ class _VideoUploadCircle extends StatelessWidget {
   final Color circleBg;
   final Color uploadRed;
   final String uploadArrowAsset;
-
-  static const double _diameter = 120;
+  final String noImageAsset;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Material(
-        color: circleBg,
-        shape: const CircleBorder(),
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const CircleBorder(),
+    return Material(
+      color: AppColors.transparent,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(22),
+        child: CustomPaint(
+          painter: _DashedRRectPainter(
+            color: AppColors.primaryColor.withValues(alpha: 0.45),
+            radius: 22,
+          ),
           child: SizedBox(
-            width: _diameter,
-            height: _diameter,
+            width: double.infinity,
+            height: 200,
             child: video == null
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
-                        uploadArrowAsset,
-                        width: 24,
-                        height: 24,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 7,
-                        ),
+                        width: 84,
+                        height: 84,
                         decoration: BoxDecoration(
-                          color: uploadRed,
-                          borderRadius: BorderRadius.circular(3),
-                          boxShadow: [
-                            BoxShadow(
-                              color: uploadRed.withValues(alpha: 0.28),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                          color: AppColors.black.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
-                          'UPLOAD',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-
-                            color: AppColors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: SvgPicture.asset(
+                            noImageAsset,
+                            fit: BoxFit.contain,
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Tap to select an image from your device and continue.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.black.withValues(alpha: 0.35),
+                              fontWeight: FontWeight.w500,
+                              height: 1.3,
+                            ),
                       ),
                     ],
                   )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.videocam_rounded,
-                        size: 40,
-                        color: AppColors.black87,
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: uploadRed,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          'UPLOAD',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+                : Center(
+                    child: Icon(
+                      Icons.videocam_rounded,
+                      size: 58,
+                      color: AppColors.black.withValues(alpha: 0.6),
+                    ),
                   ),
           ),
         ),
       ),
     );
   }
+}
+
+class _ScallopClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final radius = size.shortestSide / 2;
+    final center = Offset(size.width / 2, size.height / 2);
+    const petals = 14;
+    final inner = radius * 0.9;
+    final outer = radius;
+    final path = Path();
+    for (int i = 0; i <= petals * 2; i++) {
+      final angle = (math.pi * i) / petals;
+      final r = i.isEven ? outer : inner;
+      final point = Offset(
+        center.dx + math.cos(angle) * r,
+        center.dy + math.sin(angle) * r,
+      );
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    }
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _DashedRRectPainter extends CustomPainter {
+  const _DashedRRectPainter({required this.color, required this.radius});
+
+  final Color color;
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Offset.zero & size,
+          Radius.circular(radius),
+        ),
+      );
+    final dashed = Path();
+    for (final metric in path.computeMetrics()) {
+      double distance = 0;
+      while (distance < metric.length) {
+        final next = (distance + 11.0).clamp(0.0, metric.length).toDouble();
+        dashed.addPath(metric.extractPath(distance, next), Offset.zero);
+        distance += 20.0;
+      }
+    }
+    canvas.drawPath(
+      dashed,
+      Paint()
+        ..color = color
+        ..strokeWidth = 1.4
+        ..style = PaintingStyle.stroke,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedRRectPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.radius != radius;
 }

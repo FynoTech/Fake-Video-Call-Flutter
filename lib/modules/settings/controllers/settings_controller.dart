@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../../../core/ads/ads_remote_config_service.dart';
@@ -11,6 +12,8 @@ import '../../../core/services/store_listing_launcher.dart';
 import '../../language/controllers/language_controller.dart';
 
 class SettingsController extends GetxController {
+  static const String _moreAppsUrl =
+      'https://play.google.com/store/apps/dev?id=6272810039250116645';
   final flashEnabled = true.obs;
   final soundEnabled = true.obs;
   final vibrateEnabled = true.obs;
@@ -24,6 +27,7 @@ class SettingsController extends GetxController {
   ];
   final selectedCallSchedule = 'Off'.obs;
   final languageSubtitle = 'English'.obs;
+  final appVersionLabel = ''.obs;
 
   late final StorageService _storage;
   late final AdsRemoteConfigService _adsRc;
@@ -47,6 +51,19 @@ class SettingsController extends GetxController {
     }
     selectedCallSchedule.value = _labelFromSeconds(secs);
     _refreshLanguageSubtitle();
+    unawaited(_loadAppVersionLabel());
+  }
+
+  Future<void> _loadAppVersionLabel() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      final version = info.version.trim();
+      final build = info.buildNumber.trim();
+      if (version.isEmpty) return;
+      appVersionLabel.value = build.isEmpty
+          ? 'Version $version'
+          : 'Version $version ($build)';
+    } catch (_) {}
   }
 
   void _refreshLanguageSubtitle() {
@@ -72,6 +89,16 @@ class SettingsController extends GetxController {
   void setCallSchedule(String value) {
     selectedCallSchedule.value = value;
     unawaited(_scheduler.configureForegroundAutoIncoming(_durationFromLabel(value)));
+  }
+
+  void toggleCallScheduleEnabled(bool enabled) {
+    if (enabled) {
+      if (selectedCallSchedule.value == 'Off') {
+        setCallSchedule('15s');
+      }
+      return;
+    }
+    setCallSchedule('Off');
   }
 
   Duration _durationFromLabel(String value) {
@@ -133,6 +160,10 @@ class SettingsController extends GetxController {
 
   void openRateUs() {
     unawaited(openStoreListing());
+  }
+
+  void openMoreApps() {
+    unawaited(launchExternalUrl(_moreAppsUrl));
   }
 }
 

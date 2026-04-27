@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
@@ -19,6 +22,7 @@ import '../../../widgets/ad_loading_dialog.dart';
 enum AudioCallPhase { incoming, playing, ended }
 
 class AudioCallController extends GetxController {
+  static const String _catalogAssetPath = 'assets/data/vfc_celebrities.json';
   final callerName = ''.obs;
 
   final networkImageUrl = RxnString();
@@ -76,7 +80,18 @@ class AudioCallController extends GetxController {
       callerName.value =
           person.firstName.isNotEmpty ? person.firstName : person.name;
       networkImageUrl.value = person.imageUrl;
-      _audioUrl = person.audioUrl;
+      _audioUrl = person.audioUrl?.trim();
+      if ((_audioUrl == null || _audioUrl!.isEmpty) && !person.videoCallOnly) {
+        unawaited(() async {
+          final fallback = await _resolveAudioFromCatalogFallback(
+            personName: person.name,
+            storageFolderPath: person.storageFolderPath,
+          );
+          if (!isClosed && fallback != null && fallback.isNotEmpty) {
+            _audioUrl = fallback;
+          }
+        }());
+      }
     } else {
       _openedWithPersonItem = false;
       final name = args?['name'] as String?;
@@ -124,7 +139,7 @@ class AudioCallController extends GetxController {
   Future<void> _showInterstitialWithLoader(String adUnitId) async {
     await showAdLoadingDialog<void>(
       task: () => _showInterstitialAd(adUnitId),
-      title: 'Ad Loading',
+      title: 'ad_loading_title'.tr,
       indicatorSize: 72,
     );
   }
@@ -186,6 +201,70 @@ class AudioCallController extends GetxController {
     return '${m.toString().padLeft(2, '0')}:${two(s)}';
   }
 
+  bool _isRemoteAudio(String raw) {
+    final v = raw.trim().toLowerCase();
+    return v.startsWith('http://') || v.startsWith('https://');
+  }
+
+  Future<void> submitCallReview(int stars) async {
+    final safeStars = stars.clamp(1, 5);
+    await Get.find<StorageService>().addCallReview({
+      'type': 'audio',
+      'stars': safeStars,
+      'durationSeconds': position.value.inSeconds,
+      'callerName': callerName.value,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  String _normalizeLocalAudioPath(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.startsWith('file://')) {
+      try {
+        return Uri.parse(trimmed).toFilePath();
+      } catch (_) {
+        return trimmed;
+      }
+    }
+    return trimmed;
+  }
+
+  String _normalizeKey(String value) {
+    return value.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '');
+  }
+
+  Future<String?> _resolveAudioFromCatalogFallback({
+    required String personName,
+    required String storageFolderPath,
+  }) async {
+    try {
+      final raw = await rootBundle.loadString(_catalogAssetPath);
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map<String, dynamic>) return null;
+      final celebrities = decoded['celebrities'];
+      if (celebrities is! List) return null;
+
+      final nameKey = _normalizeKey(personName);
+      final folderKey = _normalizeKey(
+        storageFolderPath.split('/').last.replaceAll('%20', '_'),
+      );
+      for (final item in celebrities) {
+        if (item is! Map) continue;
+        final audio = item['audio']?.toString().trim();
+        if (audio == null || audio.isEmpty) continue;
+        final itemNameKey = _normalizeKey(item['name']?.toString() ?? '');
+        final itemFolderKey = _normalizeKey(
+          (item['folder']?.toString() ?? '').replaceAll('%20', '_'),
+        );
+        if ((nameKey.isNotEmpty && itemNameKey == nameKey) ||
+            (folderKey.isNotEmpty && itemFolderKey == folderKey)) {
+          return audio;
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
   Future<void> onAccept() async {
     if (acceptInProgress.value) return;
     acceptInProgress.value = true;
@@ -195,7 +274,19 @@ class AudioCallController extends GetxController {
         screenInterstitialEnabled: _adsRc.callAcceptInterstitialOn,
         screenInterstitialId: _adsRc.callAcceptInterstitialId,
       );
-      final url = _audioUrl;
+      String? url = _audioUrl;
+      if (url == null || url.isEmpty) {
+        final person = (Get.arguments as Map<String, dynamic>?)?['person'];
+        if (person is PersonItem && !person.videoCallOnly) {
+          url = await _resolveAudioFromCatalogFallback(
+            personName: person.name,
+            storageFolderPath: person.storageFolderPath,
+          );
+          if (url != null && url.isNotEmpty) {
+            _audioUrl = url;
+          }
+        }
+      }
       if (url == null || url.isEmpty) {
         Get.snackbar(
           'Audio missing',
@@ -222,7 +313,16 @@ class AudioCallController extends GetxController {
       try {
         final player = AudioPlayer();
         _player = player;
-        await player.setUrl(url);
+        if (_isRemoteAudio(url)) {
+          await player.setUrl(url);
+        } else {
+          final localPath = _normalizeLocalAudioPath(url);
+          final localFile = File(localPath);
+          if (!await localFile.exists()) {
+            throw Exception('Audio file not found');
+          }
+          await player.setFilePath(localPath);
+        }
 
         duration.value = player.duration ?? Duration.zero;
         _durSub = player.durationStream.listen((dur) {
@@ -280,7 +380,7 @@ class AudioCallController extends GetxController {
             await _incomingFeedback.stop();
             await _disposePlayer();
           },
-          title: 'Ad Loading',
+          title: 'ad_loading_title'.tr,
           indicatorSize: 72,
         );
       }
@@ -345,16 +445,9 @@ class AudioCallController extends GetxController {
         return;
       }
       if (phase.value == AudioCallPhase.playing) {
-        // End should feel instant: stop call audio/state before any ad delay.
+        // End should feel instant: stop call audio/state and show ended actions.
         await _hangUpDuringCall();
-        final endAdId = _interstitialCounter.pickAdIdForClick(
-          placement: 'audio_call_end',
-          screenInterstitialEnabled: _adsRc.callEndInterstitialOn,
-          screenInterstitialId: _adsRc.callEndInterstitialId,
-        );
-        if (endAdId != null) {
-          await _showInterstitialWithLoader(endAdId);
-        }
+        return;
       }
     } finally {
       rejectInProgress.value = false;
@@ -366,7 +459,6 @@ class AudioCallController extends GetxController {
       await _player?.pause();
       await _player?.seek(Duration.zero);
     } catch (_) {}
-    position.value = Duration.zero;
     phase.value = AudioCallPhase.ended;
   }
 

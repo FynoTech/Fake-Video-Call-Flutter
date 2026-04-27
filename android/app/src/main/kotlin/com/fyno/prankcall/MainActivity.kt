@@ -188,25 +188,9 @@ class MainActivity : FlutterActivity() {
   private fun ensureTorchCapabilityChecked() {
     if (torchSupportedChecked) return
     torchSupportedChecked = true
-
-    // On a subset of MIUI devices, cameraIdList may block for a long time.
-    // Keep camera preview working, but disable torch API path for stability.
-    val maker = Build.MANUFACTURER?.lowercase() ?: ""
-    val brand = Build.BRAND?.lowercase() ?: ""
-    val model = Build.MODEL?.lowercase() ?: ""
-    val isMiuiFamily =
-      maker.contains("xiaomi") ||
-          maker.contains("redmi") ||
-          maker.contains("poco") ||
-          brand.contains("xiaomi") ||
-          brand.contains("redmi") ||
-          brand.contains("poco") ||
-          model.contains("redmi") ||
-          model.contains("poco")
-    if (isMiuiFamily) {
-      torchSupported = false
-      Log.w(TAG, "Torch disabled on MIUI-family device for stability")
-    }
+    // Allow torch checks on all Android OEMs.
+    // Some devices may still fail at runtime; those failures are handled safely in setTorchBlocking().
+    torchSupported = true
   }
 
   private fun findTorchCameraIdBlocking(): String? {

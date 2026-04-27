@@ -126,6 +126,8 @@ class _FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic =
+        Localizations.localeOf(context).languageCode.toLowerCase() == 'ar';
     final borderRadius = BorderRadius.circular(17);
     return Material(
       color: AppColors.transparent,
@@ -148,9 +150,9 @@ class _FeatureCard extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(
               left: large ? 12 : 12,
-              right: large ? 16 : 40,
+              right: large ? 16 : 14,
               top: large ? 12 : 10,
-              bottom: large ? 12 : 12,
+              bottom: large ? 12 : 10,
             ),
             child: large
                 ? Column(
@@ -160,10 +162,10 @@ class _FeatureCard extends StatelessWidget {
                       const Spacer(),
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.white,
                           fontWeight: FontWeight.w800,
-                          fontSize: 18,
+                          fontSize: isArabic ? 16.5 : 18,
                           height: 1.1,
                         ),
                       ),
@@ -173,37 +175,56 @@ class _FeatureCard extends StatelessWidget {
                         style: TextStyle(
                           color: AppColors.white.withValues(alpha: 0.9),
                           fontWeight: FontWeight.w500,
-                          fontSize: 12.5,
+                          fontSize: isArabic ? 11.5 : 12.5,
                         ),
                       ),
                     ],
                   )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _IconTile(asset: iconAsset, size: 46, iconSize: 30),
-                      const Spacer(),
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15,
-                          height: 1.1,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColors.white.withValues(alpha: 0.9),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
+                : LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                          final bool compact = constraints.maxHeight <= 96;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _IconTile(
+                                asset: iconAsset,
+                                size: compact ? 40 : 46,
+                                iconSize: compact ? 26 : 30,
+                              ),
+                              const SizedBox(height: 6),
+                              Flexible(
+                                child: Text(
+                                  title,
+                                  maxLines: compact ? 1 : 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: compact
+                                        ? (isArabic ? 12.2 : 13.5)
+                                        : (isArabic ? 13.4 : 15),
+                                    height: 1.08,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                subtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: AppColors.white.withValues(alpha: 0.9),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: compact
+                                      ? (isArabic ? 9.2 : 10)
+                                      : (isArabic ? 10 : 11),
+                                  height: 1.0,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                   ),
           ),
         ),

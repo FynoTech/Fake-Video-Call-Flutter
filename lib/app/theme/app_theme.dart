@@ -31,7 +31,6 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         centerTitle: true,
         titleTextStyle: base.textTheme.titleLarge?.copyWith(
-          fontFamily: AppColors.fontFamily,
           color: scheme.onPrimary,
         ),
       ),

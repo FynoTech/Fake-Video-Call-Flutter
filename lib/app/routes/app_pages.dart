@@ -12,6 +12,8 @@ import '../../modules/audio_call/bindings/audio_call_binding.dart';
 import '../../modules/audio_call/views/audio_call_view.dart';
 import '../../modules/video_call/bindings/video_call_binding.dart';
 import '../../modules/video_call/views/video_call_view.dart';
+import '../../modules/schedule_call/bindings/schedule_call_binding.dart';
+import '../../modules/schedule_call/views/schedule_call_view.dart';
 import '../../modules/premium/bindings/premium_binding.dart';
 import '../../modules/premium/views/premium_view.dart';
 import '../../modules/settings/bindings/settings_binding.dart';
@@ -75,6 +77,11 @@ class AppPages {
       name: AppRoutes.videoCall,
       page: () => const VideoCallView(),
       binding: VideoCallBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.scheduleCall,
+      page: () => const ScheduleCallView(),
+      binding: ScheduleCallBinding(),
     ),
     GetPage(
       name: AppRoutes.settings,

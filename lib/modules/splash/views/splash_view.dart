@@ -50,6 +50,8 @@ class SplashView extends GetView<SplashController> {
                       ),
 
                       // _TitleRow(title: 'splash_title'.tr),
+                      const SizedBox(height: 10),
+
                       Text(
                         'splash_tagline'.tr,
                         textAlign: TextAlign.center,
@@ -81,7 +83,7 @@ class SplashView extends GetView<SplashController> {
                             opacity: busy ? 0.58 : 1,
                             child: SizedBox(
                               width: double.infinity,
-                              height: 52,
+                              height: 60,
                               child: Material(
                                 color: AppColors.transparent,
                                 borderRadius: BorderRadius.circular(16),

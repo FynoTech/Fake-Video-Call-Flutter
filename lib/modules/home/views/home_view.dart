@@ -7,9 +7,7 @@ import 'package:get/get.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/services/subscription_service.dart';
-import '../../settings/views/settings_view.dart';
 import '../controllers/home_controller.dart';
-import 'home_custom_call_tab.dart';
 import 'home_video_call_tab.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -46,9 +44,8 @@ class HomeView extends GetView<HomeController> {
         unawaited(controller.handleHomeBackPressed());
       },
       child: Obx(() {
-        final index = controller.bottomNavIndex.value.clamp(0, 2);
-        final title = _titleForTab(index);
-        final subtitle = _subtitleForTab(index);
+        final title = _titleForTab(0);
+        final subtitle = _subtitleForTab(0);
         final isPremium = subscription.isPremium.value;
         return Scaffold(
           backgroundColor: AppColors.backgroundColor,
@@ -92,15 +89,12 @@ class HomeView extends GetView<HomeController> {
             actions: isPremium
                 ? [
                     IconButton(
-                      onPressed: () => controller.selectBottomNav(2),
-                      icon: SvgPicture.asset(
-                        'assets/c_settings.svg',
-                        width: 22,
-                        height: 22,
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.black,
-                          BlendMode.srcIn,
-                        ),
+                      onPressed: () => Get.toNamed(AppRoutes.settings),
+                      icon: Image.asset(
+                        'assets/home/ic_settings_home_custom.png',
+                        width: 24,
+                        height: 24,
+                        fit: BoxFit.contain,
                       ),
                       tooltip: 'settings_title'.tr,
                     ),
@@ -118,15 +112,12 @@ class HomeView extends GetView<HomeController> {
                       tooltip: 'settings_premium_title'.tr,
                     ),
                     IconButton(
-                      onPressed: () => controller.selectBottomNav(2),
-                      icon: SvgPicture.asset(
-                        'assets/c_settings.svg',
-                        width: 22,
-                        height: 22,
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.black,
-                          BlendMode.srcIn,
-                        ),
+                      onPressed: () => Get.toNamed(AppRoutes.settings),
+                      icon: Image.asset(
+                        'assets/home/ic_settings_home_custom.png',
+                        width: 24,
+                        height: 24,
+                        fit: BoxFit.contain,
                       ),
                       tooltip: 'settings_title'.tr,
                     ),
@@ -135,101 +126,10 @@ class HomeView extends GetView<HomeController> {
           ),
           body: SafeArea(
             bottom: false,
-            child: IndexedStack(
-              index: index,
-              sizing: StackFit.expand,
-              children: const [
-                HomeVideoCallTab(),
-                HomeCustomCallTab(),
-                SettingsView(embeddedInShell: true),
-              ],
-            ),
-          ),
-          bottomNavigationBar: SafeArea(
-            top: false,
-            child: Container(
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Color(0xFFE1E1E1), width: 1),
-                ),
-              ),
-              child: NavigationBar(
-                height: 78,
-                selectedIndex: index,
-                onDestinationSelected: controller.selectBottomNav,
-                backgroundColor: AppColors.white,
-                surfaceTintColor: AppColors.white,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                indicatorColor: Colors.transparent,
-                labelTextStyle: WidgetStateProperty.resolveWith((states) {
-                  final selected = states.contains(WidgetState.selected);
-                  return TextStyle(
-                    color: selected
-                        ? const Color(0xFF58A8DB)
-                        : const Color(0xFFB3B3B3),
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    fontSize: 12,
-                  );
-                }),
-                destinations: [
-                  NavigationDestination(
-                    icon: _BottomNavSvgIcon(
-                      assetPath: 'assets/ic_videocall.svg',
-                      selected: false,
-                    ),
-                    selectedIcon: _BottomNavSvgIcon(
-                      assetPath: 'assets/ic_videocall.svg',
-                      selected: true,
-                    ),
-                    label: 'nav_video_call'.tr,
-                  ),
-                  NavigationDestination(
-                    icon: _BottomNavSvgIcon(
-                      assetPath: 'assets/ic_call.svg',
-                      selected: false,
-                    ),
-                    selectedIcon: _BottomNavSvgIcon(
-                      assetPath: 'assets/ic_call.svg',
-                      selected: true,
-                    ),
-                    label: 'nav_custom_call'.tr,
-                  ),
-                  NavigationDestination(
-                    icon: _BottomNavSvgIcon(
-                      assetPath: 'assets/c_settings.svg',
-                      selected: false,
-                    ),
-                    selectedIcon: _BottomNavSvgIcon(
-                      assetPath: 'assets/c_settings.svg',
-                      selected: true,
-                    ),
-                    label: 'nav_settings'.tr,
-                  ),
-                ],
-              ),
-            ),
+            child: const HomeVideoCallTab(),
           ),
         );
       }),
-    );
-  }
-}
-
-class _BottomNavSvgIcon extends StatelessWidget {
-  const _BottomNavSvgIcon({required this.assetPath, required this.selected});
-
-  final String assetPath;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? const Color(0xFF58A8DB) : const Color(0xFFB3B3B3);
-    return SvgPicture.asset(
-      assetPath,
-      width: 26,
-      height: 20,
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
 }

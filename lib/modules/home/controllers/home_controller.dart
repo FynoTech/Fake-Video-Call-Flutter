@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -44,7 +43,6 @@ class HomeController extends GetxController {
   bool _openingCall = false;
   bool _openingBrowse = false;
   bool _interstitialAdInFlight = false;
-  bool _openingExit = false;
   bool _categoryAdCheckInFlight = false;
   int _callsSinceWatchAdGate = 0;
   static const int _watchAdGateThreshold = 2;
@@ -130,7 +128,7 @@ class HomeController extends GetxController {
       if (adId == null) return;
       await showAdLoadingDialog<void>(
         task: () => _showInterstitialAd(adId),
-        title: 'Ad Loading',
+        title: 'ad_loading_title'.tr,
       );
     } finally {
       _categoryAdCheckInFlight = false;
@@ -200,24 +198,16 @@ class HomeController extends GetxController {
   Future<void> handleHomeBackPressed() async {
     // While opening a call from home, ignore back to avoid accidental exits.
     if (_openingCall) return;
-    if (_openingExit) return;
-    _openingExit = true;
-    try {
-      final adId = _interstitialCounter.pickAdIdForClick(
-        placement: 'home_back_exit',
-        screenInterstitialEnabled: _adsRc.homeExitInterstitialOn,
-        screenInterstitialId: _adsRc.homeExitInterstitialId,
-      );
-      if (adId != null) {
-        await showAdLoadingDialog<void>(
-          task: () => _showInterstitialAd(adId),
-          title: 'Ad Loading',
-        );
-      }
-      Get.toNamed(AppRoutes.exitApp);
-    } finally {
-      _openingExit = false;
+    if (Get.currentRoute == AppRoutes.home) {
+      await Get.toNamed(AppRoutes.exitApp);
+      return;
     }
+    // If any other route somehow delegates back handling here, restore Home.
+    if (Get.currentRoute != AppRoutes.home) {
+      Get.offAllNamed(AppRoutes.home);
+      return;
+    }
+    bottomNavIndex.value = 0;
   }
 
   Future<void> _openVfcBrowseAsync() async {
@@ -233,7 +223,7 @@ class HomeController extends GetxController {
             await _showInterstitialAd(adId);
           }
         },
-        title: 'Ad Loading',
+        title: 'ad_loading_title'.tr,
       );
       Get.to(() => const VfcBrowseView());
     } finally {
@@ -260,7 +250,7 @@ class HomeController extends GetxController {
             await _showInterstitialAd(adId);
           }
         },
-        title: 'Ad Loading',
+        title: 'ad_loading_title'.tr,
       );
       Get.toNamed(
         AppRoutes.personsCatalog,
@@ -308,12 +298,9 @@ class HomeController extends GetxController {
         _callsSinceWatchAdGate = 0;
       }
 
-      final ctx = Get.context;
-      if (ctx != null && ctx.mounted) {
-        await _warmCallerImageCache(ctx, person);
-      }
-      // Keep tap-to-open instant. Media/connectivity validation continues in call screen flow.
-      Get.toNamed(AppRoutes.videoCall, arguments: {'person': person});
+      final hasVideo = person.videoUrl?.trim().isNotEmpty ?? false;
+      final route = hasVideo ? AppRoutes.videoCall : AppRoutes.audioCall;
+      Get.toNamed(route, arguments: {'person': person});
       _callsSinceWatchAdGate += 1;
     } finally {
       _openingCall = false;
@@ -321,24 +308,8 @@ class HomeController extends GetxController {
   }
 
   Future<bool> _runWatchAdGateFlow() async {
-    final shouldContinue = await _showWatchAdDialog();
-    if (!shouldContinue) return false;
-    var adCompleted = false;
-    await showAdLoadingDialog<void>(
-      task: () async {
-        adCompleted = await _showWatchAdRace();
-      },
-      title: 'Ad Loading',
-      subtitle: 'Please watch an ad to continue',
-    );
-    if (!adCompleted) {
-      Get.snackbar(
-        'watch_ad_title'.tr,
-        'watch_ad_message'.tr,
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-    return adCompleted;
+    // TESTING: bypass watch-ad gate and allow direct flow.
+    return true;
   }
 
   Future<bool> _showWatchAdDialog() async {
@@ -538,7 +509,8 @@ class HomeController extends GetxController {
 
     ImageProvider? provider;
     if (raw.startsWith('http://') || raw.startsWith('https://')) {
-      provider = CachedNetworkImageProvider(raw);
+      // Avoid noisy codec exceptions for expired/forbidden remote avatars.
+      return;
     } else {
       String path = raw;
       if (raw.startsWith('file://')) {

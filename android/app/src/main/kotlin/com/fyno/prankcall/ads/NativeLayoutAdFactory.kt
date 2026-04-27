@@ -100,6 +100,14 @@ class NativeLayoutAdFactory(
   }
 
   private fun applyCustomIntroColors(adView: NativeAdView, customOptions: Map<String, Any>?) {
+    val ctaView = adView.findViewById<View?>(R.id.ad_call_to_action) as? TextView
+
+    // Keep onboarding full-screen native CTA on app primary button style.
+    if (layoutResId == R.layout.full_screen_native) {
+      ctaView?.setBackgroundResource(R.drawable.bg_btn_splash)
+      return
+    }
+
     if (customOptions == null) return
 
     val bgColor = parseColorOrNull(customOptions[KEY_INTRO_AD_BG_COLOR])
@@ -109,7 +117,7 @@ class NativeLayoutAdFactory(
 
     val buttonColor = parseColorOrNull(customOptions[KEY_INTRO_LARGE_NATIVE_BTN_COLOR])
     if (buttonColor != null) {
-      (adView.findViewById<View?>(R.id.ad_call_to_action) as? TextView)?.setBackgroundColor(buttonColor)
+      ctaView?.setBackgroundColor(buttonColor)
     }
   }
 

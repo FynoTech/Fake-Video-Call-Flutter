@@ -5,7 +5,7 @@ class AppColors {
   AppColors._();
 
   /// Registered in [pubspec.yaml] under `assets/fonts/`.
-  static const String fontFamily = 'Roboto';
+  static const String fontFamily = 'Poppins';
 
   /////New Design///
   static const Color primaryColor = Color(0xFFB267FF);
@@ -75,20 +75,22 @@ class AppColors {
   static const LinearGradient onboardingBackgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0x2B5FAFE0), Color(0x474A90C2), Color(0x00FFFFFF)],
-    stops: [0.0, 0.20, 0.99],
+    colors: [Color(0x1AB267FF), Color(0x14FA84F0), Color(0x0DA2178E)],
+    stops: [0.0, 0.46, 0.87],
   );
 
-  static const Color onboardingDotActive = Color(0xFF5FAFE0);
-  static const Color onboardingDotInactive = Color(0x665FAFE0);
-  static const Color onboardingNextButton = Color(0xFF5FAFE0);
+  static const Color onboardingDotActive = Color(0xFFB267FF);
+  static const Color onboardingDotInactive = Color(0x66B267FF);
+  static const Color onboardingNextButton = Color(0xFFB267FF);
   static const LinearGradient onboardingNextButtonGradient = LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
     colors: [
-      gradientAppBarMid, // #5FAFE0
-      gradientAppBarEnd, // #4A90C2
+      Color(0xFFB267FF), // 0%
+      Color(0xFFFA84F0), // 46%
+      Color(0xFFA2178E), // 87%
     ],
+    stops: [0.0, 0.46, 0.87],
   );
 
   // —— Language screen ——
@@ -102,7 +104,7 @@ class AppColors {
   static const Color languageRadioBorderUnselected = Color(0xFFC5C5C5);
 
   /// Skeleton / shimmer (aligned with home card blues).
-  static const Color shimmerBase = Color(0xFFC9DCE8);
+  static const Color shimmerBase = Color(0xFFDFD4F3);
   static const Color shimmerHighlight = Color(0xFFF2F7FB);
 
   // —— Home screen cards ——

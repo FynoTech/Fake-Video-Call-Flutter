@@ -210,6 +210,16 @@ class _EndedCallHeader extends StatelessWidget {
               fontSize: 17,
             ),
           ),
+          const SizedBox(height: 8),
+          Text(
+            VideoCallController.formatCallElapsed(controller.position.value),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.white.withValues(alpha: 0.92),
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+            ),
+          ),
         ],
       );
     });
@@ -272,6 +282,19 @@ class _VideoCallActiveLayer extends StatelessWidget {
           children: [
             SizedBox(height: pad.top + 12),
             Obx(() {
+              final connecting = !controller.videoReady.value;
+              if (connecting) {
+                return Text(
+                  'video_call_connecting'.tr,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.white.withValues(alpha: 0.92),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    letterSpacing: 0.4,
+                  ),
+                );
+              }
               final name = controller.callerName.value;
               return Text(
                 name,
@@ -280,24 +303,6 @@ class _VideoCallActiveLayer extends StatelessWidget {
                   color: AppColors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 22,
-                ),
-              );
-            }),
-            const SizedBox(height: 8),
-            Obx(() {
-              final connecting = !controller.videoReady.value;
-              return Text(
-                connecting
-                    ? 'video_call_connecting'.tr
-                    : VideoCallController.formatCallElapsed(
-                        controller.position.value,
-                      ),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.white.withValues(alpha: 0.92),
-                  fontWeight: FontWeight.w400,
-                  fontSize: 18,
-                  letterSpacing: 0.5,
                 ),
               );
             }),
@@ -487,94 +492,188 @@ class _VideoCallControlsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-      decoration: BoxDecoration(
-        color: AppColors.black.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Obx(
-            () => _RoundToolButton(
-              icon: controller.pipLiveCameraOn.value
-                  ? Icons.videocam_rounded
-                  : Icons.videocam_off_rounded,
-              onTap: controller.togglePipLiveCamera,
-            ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(34),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+          decoration: BoxDecoration(
+            color: const Color(0xB23A3A3A),
+            borderRadius: BorderRadius.circular(34),
           ),
-          Obx(
-            () => _RoundToolButton(
-              icon: controller.micMuted.value
-                  ? Icons.mic_off_rounded
-                  : Icons.mic_rounded,
-              onTap: controller.toggleMicMuted,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => _TopToolButton(
+                        icon: controller.micMuted.value
+                            ? Icons.mic_off_rounded
+                            : Icons.mic_rounded,
+                        label: 'call_control_mute'.tr,
+                        onTap: controller.toggleMicMuted,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: _TopToolButton(
+                      icon: Icons.cameraswitch_rounded,
+                      label: 'call_control_flip'.tr,
+                      onTap: controller.switchCamera,
+                    ),
+                  ),
+                  Expanded(
+                    child: _TopToolButton(
+                      icon: Icons.close_rounded,
+                      label: 'call_control_end'.tr,
+                      isEnd: true,
+                      onTap: () => controller.onReject(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => _BottomPillButton(
+                        icon: controller.pipLiveCameraOn.value
+                            ? Icons.videocam_off_rounded
+                            : Icons.videocam_rounded,
+                        label: controller.pipLiveCameraOn.value
+                            ? 'call_control_camera_off'.tr
+                            : 'call_control_camera_on'.tr,
+                        onTap: controller.togglePipLiveCamera,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Obx(
+                      () => _BottomPillButton(
+                        icon: controller.speakerLoud.value
+                            ? Icons.volume_up_rounded
+                            : Icons.volume_down_rounded,
+                        label: 'call_control_speaker'.tr,
+                        onTap: controller.toggleSpeaker,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          _EndCallCenterButton(onTap: () => controller.onReject()),
-          _RoundToolButton(
-            icon: Icons.cameraswitch_rounded,
-            onTap: () => controller.switchCamera(),
-          ),
-          Obx(
-            () => _RoundToolButton(
-              icon: controller.speakerLoud.value
-                  ? Icons.volume_up_rounded
-                  : Icons.volume_down_rounded,
-              onTap: () => controller.toggleSpeaker(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RoundToolButton extends StatelessWidget {
-  const _RoundToolButton({required this.icon, required this.onTap});
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.white.withValues(alpha: 0.14),
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: SizedBox(
-          width: 46,
-          height: 46,
-          child: Icon(icon, color: AppColors.white, size: 24),
         ),
       ),
     );
   }
 }
 
-class _EndCallCenterButton extends StatelessWidget {
-  const _EndCallCenterButton({required this.onTap});
+class _TopToolButton extends StatelessWidget {
+  const _TopToolButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.isEnd = false,
+    this.assetIcon,
+  });
 
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isEnd;
+  final String? assetIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = isEnd
+        ? const Color(0xFFF25A4B)
+        : AppColors.white.withValues(alpha: 0.20);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Material(
+          color: bg,
+          shape: const CircleBorder(),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: SizedBox(
+              width: 52,
+              height: 52,
+              child: Center(
+                child: assetIcon == null
+                    ? Icon(icon, color: AppColors.white, size: isEnd ? 27 : 25)
+                    : Image.asset(
+                        assetIcon!,
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.contain,
+                      ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.white.withValues(alpha: 0.9),
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BottomPillButton extends StatelessWidget {
+  const _BottomPillButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFE02424),
-      shape: const CircleBorder(),
-      elevation: 4,
-      shadowColor: AppColors.black.withValues(alpha: 0.4),
+      color: AppColors.white.withValues(alpha: 0.22),
+      borderRadius: BorderRadius.circular(36),
       child: InkWell(
-        customBorder: const CircleBorder(),
+        borderRadius: BorderRadius.circular(36),
         onTap: onTap,
-        child: const SizedBox(
-          width: 64,
-          height: 64,
-          child: Icon(Icons.call_end_rounded, color: AppColors.white, size: 30),
+        child: SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: AppColors.white.withValues(alpha: 0.92),
+                size: 25,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                label,
+                style: TextStyle(
+                  color: AppColors.white.withValues(alpha: 0.92),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -594,12 +693,12 @@ class _BlurredBackdrop extends StatelessWidget {
 
   Widget _image() {
     if (networkUrl != null && networkUrl!.isNotEmpty) {
-      return Image(
-        image: CachedNetworkImageProvider(networkUrl!),
+      return CachedNetworkImage(
+        imageUrl: networkUrl!,
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
-        errorBuilder: (_, __, ___) => Image.asset(
+        errorWidget: (_, __, ___) => Image.asset(
           assetFallback,
           fit: BoxFit.cover,
           width: double.infinity,
@@ -657,20 +756,19 @@ class _VideoRingAvatar extends StatelessWidget {
   Widget _photo() {
     final r = radius * 2;
     if (networkUrl != null && networkUrl!.isNotEmpty) {
-      return Image(
-        image: CachedNetworkImageProvider(networkUrl!),
+      return CachedNetworkImage(
+        imageUrl: networkUrl!,
         fit: BoxFit.cover,
         alignment: Alignment.topCenter,
         width: r,
         height: r,
-        errorBuilder: (_, __, ___) =>
-            Image.asset(
-              assetFallback,
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              width: r,
-              height: r,
-            ),
+        errorWidget: (_, __, ___) => Image.asset(
+          assetFallback,
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+          width: r,
+          height: r,
+        ),
       );
     }
     if (!kIsWeb &&
@@ -683,14 +781,13 @@ class _VideoRingAvatar extends StatelessWidget {
         alignment: Alignment.topCenter,
         width: r,
         height: r,
-        errorBuilder: (_, __, ___) =>
-            Image.asset(
-              assetFallback,
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              width: r,
-              height: r,
-            ),
+        errorBuilder: (_, __, ___) => Image.asset(
+          assetFallback,
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+          width: r,
+          height: r,
+        ),
       );
     }
     return Image.asset(
@@ -723,7 +820,11 @@ class _VideoRingAvatar extends StatelessWidget {
           ),
           ClipPath(
             clipper: const _AvatarScallopClipper(petals: 12, innerFactor: 0.90),
-            child: SizedBox(width: innerSize, height: innerSize, child: _photo()),
+            child: SizedBox(
+              width: innerSize,
+              height: innerSize,
+              child: _photo(),
+            ),
           ),
         ],
       ),
@@ -930,20 +1031,44 @@ class _CallAgainBottomBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
       child: SizedBox(
         width: double.infinity,
-        child: FilledButton(
-          onPressed: () => onCallAgain(),
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
-            foregroundColor: AppColors.white,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: const StadiumBorder(),
-            textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.white,
+        height: 52,
+        child: Material(
+          color: AppColors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () => onCallAgain(),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+                border: Border.all(color: AppColors.black, width: 1.5),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'call_again'.tr,
+                      style: const TextStyle(
+                        fontFamily: AppColors.fontFamily,
+                        color: AppColors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Image.asset(
+                      'assets/home/ic_call_again_ad.png',
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-          child: Text('call_again'.tr),
         ),
       ),
     );

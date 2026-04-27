@@ -316,23 +316,30 @@ class _OnboardingFullscreenNativeViewState
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 14),
               child: SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 60,
                 child: Material(
                   color: AppColors.transparent,
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(16),
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
                     onTap: _popScreen,
                     child: Ink(
-                      decoration: const BoxDecoration(
-                        gradient: AppColors.appBarGradient,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        border: Border.all(
+                          color: AppColors.black,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: Center(
                         child: Text(
                           'Continue',
                           style: theme.textTheme.labelLarge?.copyWith(
+                            fontFamily: AppColors.fontFamily,
                             color: AppColors.white,
                             fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ),

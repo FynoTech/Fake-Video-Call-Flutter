@@ -105,6 +105,7 @@ class _BackButton extends StatelessWidget {
       splashRadius: 20,
       icon: SvgPicture.asset(
         'assets/setting/ic_back.svg',
+        matchTextDirection: true,
         width: 24,
         height: 24,
       ),

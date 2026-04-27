@@ -139,7 +139,7 @@ class VideoCallController extends GetxController {
   Future<void> _showInterstitialWithLoader(String adUnitId) async {
     await showAdLoadingDialog<void>(
       task: () => _showInterstitialAd(adUnitId),
-      title: 'Ad Loading',
+      title: 'ad_loading_title'.tr,
         indicatorSize: 72,
     );
   }
@@ -698,6 +698,17 @@ class VideoCallController extends GetxController {
     micMuted.toggle();
   }
 
+  Future<void> submitCallReview(int stars) async {
+    final safeStars = stars.clamp(1, 5);
+    await Get.find<StorageService>().addCallReview({
+      'type': 'video',
+      'stars': safeStars,
+      'durationSeconds': position.value.inSeconds,
+      'callerName': callerName.value,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
   Future<void> toggleSpeaker() async {
     speakerLoud.toggle();
     await _applySpeakerAudio();
@@ -736,7 +747,7 @@ class VideoCallController extends GetxController {
             await _incomingFeedback.stop();
             await _disposeAll();
           },
-          title: 'Ad Loading',
+          title: 'ad_loading_title'.tr,
           indicatorSize: 72,
         );
       }
@@ -821,7 +832,6 @@ class VideoCallController extends GetxController {
       await _videoPlayer?.pause();
       await _videoPlayer?.seekTo(Duration.zero);
     } catch (_) {}
-    position.value = Duration.zero;
     phase.value = VideoCallPhase.ended;
   }
 

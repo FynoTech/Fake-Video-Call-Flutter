@@ -34,7 +34,7 @@ class LanguageView extends GetView<LanguageController> {
         automaticallyImplyLeading: false,
         titleSpacing: 14,
         title: Text(
-          'Choose Language',
+          'language_title'.tr,
           style: const TextStyle(
             fontFamily: 'Audiowide',
             fontSize: 18,
@@ -50,6 +50,7 @@ class LanguageView extends GetView<LanguageController> {
             splashRadius: 20,
             icon: SvgPicture.asset(
               'assets/setting/ic_back.svg',
+              matchTextDirection: true,
               width: 35,
               height: 35,
             ),
@@ -57,33 +58,29 @@ class LanguageView extends GetView<LanguageController> {
         ),
         actions: [
           Obx(() {
-            final hasSelection = controller.selectedCode.value != null;
+            if (controller.selectedCode.value == null) {
+              return const SizedBox.shrink();
+            }
             return Padding(
               padding: const EdgeInsetsDirectional.only(end: 14),
-              child: Opacity(
-                opacity: hasSelection ? 1 : 0.5,
-                child: IgnorePointer(
-                  ignoring: !hasSelection,
-                  child: InkWell(
+              child: InkWell(
+                borderRadius: BorderRadius.circular(24),
+                onTap: controller.confirm,
+                child: Ink(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 9,
+                  ),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
-                    onTap: controller.confirm,
-                    child: Ink(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 9,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: AppColors.primaryColor,
-                      ),
-                      child: Text(
-                        'Done',
-                        style: const TextStyle(
-                          color: AppColors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                    color: AppColors.primaryColor,
+                  ),
+                  child: Text(
+                    'language_done'.tr,
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
@@ -126,7 +123,7 @@ class LanguageView extends GetView<LanguageController> {
                             final o = controller.options[index];
                             final selected = selectedCode == o.code;
                             return _LanguageTile(
-                              flagAsset: o.flagAsset,
+                              flagAssetPath: o.flagAssetPath,
                               label: o.label,
                               selected: selected,
                               onTap: () => controller.select(o.code),
@@ -194,15 +191,41 @@ double _nativeHeightForFactory(String? factoryId) {
   }
 }
 
+/// Flat flag icon in a circular frame.
+class _CircularFlagIcon extends StatelessWidget {
+  const _CircularFlagIcon({required this.assetPath});
+
+  final String assetPath;
+
+  static const double _size = 50;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _size,
+      height: _size,
+      child: ClipOval(
+        clipBehavior: Clip.antiAlias,
+        child: Image.asset(
+          assetPath,
+          width: _size,
+          height: _size,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
 class _LanguageTile extends StatelessWidget {
   const _LanguageTile({
-    required this.flagAsset,
+    required this.flagAssetPath,
     required this.label,
     required this.selected,
     required this.onTap,
   });
 
-  final String flagAsset;
+  final String flagAssetPath;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -220,14 +243,7 @@ class _LanguageTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: Row(
               children: [
-                ClipOval(
-                  child: Image.asset(
-                    flagAsset,
-                    width: 46,
-                    height: 46,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                _CircularFlagIcon(assetPath: flagAssetPath),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Text(

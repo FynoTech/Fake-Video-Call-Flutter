@@ -90,6 +90,15 @@ class OnboardingController extends GetxController {
     }
   }
 
+  Future<void> previous() async {
+    final idx = currentPage.value;
+    if (idx <= 0) return;
+    await pageController.previousPage(
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   Future<void> onSkipTap() async {
     if (_interstitialAdInFlight) return;
     final pageIndex = currentPage.value.clamp(0, pages.length - 1);
@@ -126,7 +135,7 @@ class OnboardingController extends GetxController {
 
     await showAdLoadingDialog<void>(
       task: () => _preloadFinishInterstitial(ads.onboardingInterstitialId),
-      title: 'Ad Loading',
+      title: 'ad_loading_title'.tr,
     );
 
     // Same tap flow: if ad isn't available after preload attempt, continue navigation.

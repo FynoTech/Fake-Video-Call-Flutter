@@ -6,8 +6,6 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/ads/ads_remote_config_service.dart';
 import '../../../core/services/subscription_service.dart';
 import '../../../widgets/ads/race_banner_native_slot.dart';
-import '../../../widgets/gradient_app_bar.dart';
-import '../../../widgets/settings_gradient_switch.dart';
 import '../../home/controllers/home_controller.dart';
 import '../controllers/settings_controller.dart';
 
@@ -19,91 +17,177 @@ class SettingsView extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
+    final isCompact = screenSize.width <= 360;
+    final sidePad = isCompact ? 14.0 : 18.0;
     final ads = Get.find<AdsRemoteConfigService>();
     final homeController = Get.find<HomeController>();
     final bottomNativeFactory = _pickNativeFactoryIdForSettingsBottom(ads);
     final showBottomAd =
         ads.settingsBottomBannerOn || bottomNativeFactory != null;
     final list = ListView(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 24),
+      padding: EdgeInsets.fromLTRB(sidePad, 16, sidePad, 24),
       children: [
         Obx(() {
-          final isPremium = Get.isRegistered<SubscriptionService>() &&
+          final isPremium =
+              Get.isRegistered<SubscriptionService>() &&
               Get.find<SubscriptionService>().isPremium.value;
           if (isPremium) return const SizedBox.shrink();
           return Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: _PremiumCard(onTap: controller.openPremium),
+            child: _PremiumCard(
+              onTap: controller.openPremium,
+              compact: isCompact,
+            ),
           );
         }),
         if (ads.languageScreenOn) ...[
-          Obx(
-            () => _SettingsTile(
-              iconAsset: 'assets/setting/ic_lang.svg',
+          Text(
+            'settings_general_section'.tr,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Color(0xffA7A7A7),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _SettingsCard(
+            child: _SettingsTile(
+              iconAsset: 'assets/setting/ic_lang_custom.png',
+              fallbackIcon: Icons.translate_rounded,
               label: 'settings_language'.tr,
-              subtitle: controller.languageSubtitle.value,
-              trailing: const Icon(Icons.chevron_right_rounded),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: Color(0xFFD5D5D8),
+              ),
               onTap: controller.openLanguage,
             ),
           ),
+          const SizedBox(height: 12),
+          Obx(
+            () => _SettingsCard(
+              child: _SettingsTile(
+                iconAsset: 'assets/setting/ic_flash_custom.png',
+                fallbackIcon: Icons.flash_on_rounded,
+                label: 'settings_flash'.tr,
+                trailing: Switch(
+                  value: controller.flashEnabled.value,
+                  onChanged: controller.toggleFlash,
+                  activeColor: AppColors.primaryColor,
+                  inactiveThumbColor: const Color(0xFFD9D9D9),
+                  activeTrackColor: const Color(0xFFF2E5FF),
+                  inactiveTrackColor: const Color(0xFFF0F0F0),
+                  trackOutlineColor: WidgetStateProperty.all(
+                    Colors.transparent,
+                  ),
+                  trackOutlineWidth: WidgetStateProperty.all(0),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Obx(
+            () => _SettingsCard(
+              child: _SettingsTile(
+                iconAsset: 'assets/setting/ic_vibrate_custom.png',
+                fallbackIcon: Icons.vibration_rounded,
+                label: 'settings_vibrate'.tr,
+                trailing: Switch(
+                  value: controller.vibrateEnabled.value,
+                  onChanged: controller.toggleVibrate,
+                  activeColor: AppColors.primaryColor,
+                  inactiveThumbColor: const Color(0xFFD9D9D9),
+                  activeTrackColor: const Color(0xFFF2E5FF),
+                  inactiveTrackColor: const Color(0xFFF0F0F0),
+                  trackOutlineColor: WidgetStateProperty.all(
+                    Colors.transparent,
+                  ),
+                  trackOutlineWidth: WidgetStateProperty.all(0),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Obx(
+            () => _SettingsCard(
+              child: _SettingsTile(
+                iconAsset: 'assets/setting/ic_sound.png',
+                fallbackIcon: Icons.surround_sound_outlined,
+                label: 'settings_sound'.tr,
+                trailing: Switch(
+                  value: controller.soundEnabled.value,
+                  onChanged: controller.toggleSound,
+                  activeColor: AppColors.primaryColor,
+                  inactiveThumbColor: const Color(0xFFD9D9D9),
+                  activeTrackColor: const Color(0xFFF2E5FF),
+                  inactiveTrackColor: const Color(0xFFF0F0F0),
+                  trackOutlineColor: WidgetStateProperty.all(
+                    Colors.transparent,
+                  ),
+                  trackOutlineWidth: WidgetStateProperty.all(0),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
         ],
-        _SettingsTile(
-          iconAsset: 'assets/setting/ic_help.svg',
-          label: 'settings_how_to_use'.tr,
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: controller.openHowToUse,
-        ),
-        Obx(
-          () => _CallScheduleRow(
-            value: controller.selectedCallSchedule.value,
-            options: controller.callScheduleOptions,
-            onChanged: controller.setCallSchedule,
+        Text(
+          'settings_support_section'.tr,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: Color(0xffA7A7A7),
+            fontWeight: FontWeight.w500,
           ),
         ),
-        Obx(
-          () => _SettingsTile(
-            iconAsset: 'assets/setting/ic_flash.svg',
-            label: 'settings_flash'.tr,
-            trailing: SettingsGradientSwitch(
-              value: controller.flashEnabled.value,
-              onChanged: controller.toggleFlash,
+        const SizedBox(height: 10),
+        _SettingsCard(
+          child: _SettingsTile(
+            iconAsset: 'assets/setting/ic_more_apps_custom.png',
+            fallbackIcon: Icons.star_rounded,
+            label: 'settings_rate_us'.tr,
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: Color(0xFFD5D5D8),
             ),
+            onTap: controller.openRateUs,
           ),
         ),
-        Obx(
-          () => _SettingsTile(
-            iconAsset: 'assets/setting/ic_sound.svg',
-            label: 'settings_sound'.tr,
-            subtitle: 'settings_ringtone_system'.tr,
-            trailing: SettingsGradientSwitch(
-              value: controller.soundEnabled.value,
-              onChanged: controller.toggleSound,
+        const SizedBox(height: 12),
+        _SettingsCard(
+          child: _SettingsTile(
+            iconAsset: 'assets/setting/ic_share_custom.png',
+            fallbackIcon: Icons.share_rounded,
+            label: 'settings_share_app'.tr,
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: Color(0xFFD5D5D8),
             ),
+            onTap: controller.openRateUs,
           ),
         ),
-        Obx(
-          () => _SettingsTile(
-            iconAsset: 'assets/setting/ic_vibrate.svg',
-            label: 'settings_vibrate'.tr,
-            trailing: SettingsGradientSwitch(
-              value: controller.vibrateEnabled.value,
-              onChanged: controller.toggleVibrate,
-            ),
-          ),
-        ),
-        if (ads.shouldShowPrivacyPolicyInSettings) ...[
-          _SettingsTile(
-            iconAsset: 'assets/setting/ic_privachy.svg',
+        const SizedBox(height: 12),
+        _SettingsCard(
+          child: _SettingsTile(
+            iconAsset: 'assets/setting/ic_privacy_custom.png',
+            fallbackIcon: Icons.privacy_tip_outlined,
             label: 'settings_privacy_policy'.tr,
-            trailing: const Icon(Icons.chevron_right_rounded),
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: Color(0xFFD5D5D8),
+            ),
             onTap: controller.openPrivacyPolicy,
           ),
-        ],
-        _SettingsTile(
-          iconAsset: 'assets/setting/ic_rate.svg',
-          label: 'settings_rate_us'.tr,
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: controller.openRateUs,
+        ),
+        const SizedBox(height: 12),
+        _SettingsCard(
+          child: _SettingsTile(
+            iconAsset: 'assets/setting/ic_rate_custom.png',
+            fallbackIcon: Icons.apps_rounded,
+            label: 'settings_more_apps'.tr,
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: Color(0xFFD5D5D8),
+            ),
+            onTap: controller.openMoreApps,
+          ),
         ),
       ],
     );
@@ -114,33 +198,45 @@ class SettingsView extends GetView<SettingsController> {
         child: MediaQuery.removePadding(
           context: context,
           removeTop: true,
-          child: Column(
-            children: [
-              Expanded(child: list),
-              if (showBottomAd)
-                Obx(() {
-                  if (homeController.bottomNavIndex.value != 2) {
-                    return const SizedBox.shrink();
-                  }
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 8),
-                      RaceBannerNativeSlot(
-                        bannerEnabled: ads.settingsBottomBannerOn,
-                        nativeEnabled: bottomNativeFactory != null,
-                        bannerUnitId: ads.settingsBannerId,
-                        nativeUnitId: ads.settingsNativeId,
-                        debugLabel: 'settings_bottom_embedded',
-                        nativeFactoryId: bottomNativeFactory,
-                        nativeHeight: _nativeHeightForFactory(
-                          bottomNativeFactory,
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-            ],
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: Column(
+                children: [
+                  Expanded(child: list),
+                  if (showBottomAd)
+                    Obx(() {
+                      if (homeController.bottomNavIndex.value != 2) {
+                        return const SizedBox.shrink();
+                      }
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 8),
+                          RaceBannerNativeSlot(
+                            bannerEnabled: ads.settingsBottomBannerOn,
+                            nativeEnabled: bottomNativeFactory != null,
+                            bannerUnitId: ads.settingsBannerId,
+                            nativeUnitId: ads.settingsNativeId,
+                            debugLabel: 'settings_bottom_embedded',
+                            nativeFactoryId: bottomNativeFactory,
+                            nativeHeight: _nativeHeightForFactory(
+                              bottomNativeFactory,
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  const SizedBox(height: 8),
+                  Obx(
+                    () => _SettingsVersionFooter(
+                      label: controller.appVersionLabel.value,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       );
@@ -148,34 +244,69 @@ class SettingsView extends GetView<SettingsController> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: GradientAppBar(
-        title: 'settings_title'.tr,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        toolbarHeight: 84,
+        titleSpacing: 20,
+        leadingWidth: 44,
         leading: IconButton(
+          onPressed: () => Get.back(),
           icon: SvgPicture.asset(
             'assets/setting/ic_back.svg',
+            matchTextDirection: true,
             width: 22,
             height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.black,
+              BlendMode.srcIn,
+            ),
           ),
-          onPressed: () => Get.back(),
+        ),
+        title: Text(
+          'settings_title'.tr,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontFamily: 'Audiowide',
+            fontSize: 24,
+            color: AppColors.black,
+            letterSpacing: 0.2,
+          ),
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(child: list),
-            if (showBottomAd) ...[
-              const SizedBox(height: 8),
-              RaceBannerNativeSlot(
-                bannerEnabled: ads.settingsBottomBannerOn,
-                nativeEnabled: bottomNativeFactory != null,
-                bannerUnitId: ads.settingsBannerId,
-                nativeUnitId: ads.settingsNativeId,
-                debugLabel: 'settings_bottom_standalone',
-                nativeFactoryId: bottomNativeFactory,
-                nativeHeight: _nativeHeightForFactory(bottomNativeFactory),
-              ),
-            ],
-          ],
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Column(
+              children: [
+                Expanded(child: list),
+                if (showBottomAd) ...[
+                  const SizedBox(height: 8),
+                  RaceBannerNativeSlot(
+                    bannerEnabled: ads.settingsBottomBannerOn,
+                    nativeEnabled: bottomNativeFactory != null,
+                    bannerUnitId: ads.settingsBannerId,
+                    nativeUnitId: ads.settingsNativeId,
+                    debugLabel: 'settings_bottom_standalone',
+                    nativeFactoryId: bottomNativeFactory,
+                    nativeHeight: _nativeHeightForFactory(bottomNativeFactory),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Obx(
+                  () => _SettingsVersionFooter(
+                    label: controller.appVersionLabel.value,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -205,10 +336,34 @@ double _nativeHeightForFactory(String? factoryId) {
   }
 }
 
+class _SettingsVersionFooter extends StatelessWidget {
+  const _SettingsVersionFooter({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    if (label.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 2, 12, 10),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: const Color(0xFF9F9FA6),
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
 class _PremiumCard extends StatelessWidget {
-  const _PremiumCard({required this.onTap});
+  const _PremiumCard({required this.onTap, this.compact = false});
 
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -224,8 +379,8 @@ class _PremiumCard extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  'assets/premium/premium_card.png',
-                  fit: BoxFit.contain,
+                  'assets/premium/ic_pro_card_bg.png',
+                  fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => Container(
                     decoration: const BoxDecoration(
                       gradient: AppColors.appBarGradient,
@@ -235,54 +390,56 @@ class _PremiumCard extends StatelessWidget {
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(18, 16, 16, 16),
+                padding: EdgeInsets.fromLTRB(
+                  compact ? 14 : 18,
+                  compact ? 12 : 16,
+                  compact ? 12 : 16,
+                  compact ? 12 : 16,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'settings_premium_title'.tr,
-                      style: textTheme.titleMedium?.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'settings_premium_subtitle'.tr,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.white.withValues(alpha: 0.95),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: onTap,
-                        borderRadius: BorderRadius.circular(28),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 160),
-                          child: Ink(
-                            height: 35,
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.circular(28),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'settings_premium_cta'.tr,
-                                style: textTheme.titleMedium?.copyWith(
-                                  color: AppColors.gradientAppBarEnd,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
-                              ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'settings_upgrade_to'.tr,
+                          style: textTheme.titleMedium?.copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: compact ? 20 : 24,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.94),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'settings_pro'.tr,
+                            style: textTheme.titleMedium?.copyWith(
+                              color: const Color(0xFF2D80C9),
+                              fontWeight: FontWeight.w800,
+                              fontSize: compact ? 20 : 24,
+                              height: 1.0,
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'settings_get_unlimited_access'.tr,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.white.withValues(alpha: 0.95),
+                        fontSize: compact ? 13 : 15,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -313,17 +470,23 @@ class _CallScheduleRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Container(
+          SvgPicture.asset(
+            'assets/setting/ic_schedule.svg',
             width: 44,
             height: 44,
-            decoration: const BoxDecoration(
-              gradient: AppColors.appBarGradient,
-              shape: BoxShape.circle,
+            fit: BoxFit.contain,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primaryColor,
+              BlendMode.srcIn,
             ),
-            child: const Icon(
-              Icons.call_rounded,
-              color: AppColors.white,
-              size: 24,
+            placeholderBuilder: (_) => const SizedBox(
+              width: 44,
+              height: 44,
+              child: Icon(
+                Icons.schedule_rounded,
+                color: AppColors.primaryColor,
+                size: 24,
+              ),
             ),
           ),
           const SizedBox(width: 14),
@@ -398,10 +561,30 @@ class _CallScheduleRow extends StatelessWidget {
   }
 }
 
+class _SettingsCard extends StatelessWidget {
+  const _SettingsCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFF0F0F0)),
+      ),
+      child: child,
+    );
+  }
+}
+
 class _SettingsTile extends StatelessWidget {
   const _SettingsTile({
     required this.iconAsset,
     required this.label,
+    required this.fallbackIcon,
     this.subtitle,
     this.trailing,
     this.onTap,
@@ -409,6 +592,7 @@ class _SettingsTile extends StatelessWidget {
 
   final String iconAsset;
   final String label;
+  final IconData fallbackIcon;
   final String? subtitle;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -417,19 +601,18 @@ class _SettingsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+      child: SizedBox(
+        height: 58,
         child: Row(
           children: [
-            SvgPicture.asset(
-              iconAsset,
-              width: 44,
-              height: 44,
-              fit: BoxFit.contain,
+            _SettingsLeadingIcon(
+              iconAsset: iconAsset,
+              fallbackIcon: fallbackIcon,
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -454,6 +637,43 @@ class _SettingsTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SettingsLeadingIcon extends StatelessWidget {
+  const _SettingsLeadingIcon({
+    required this.iconAsset,
+    required this.fallbackIcon,
+  });
+
+  final String iconAsset;
+  final IconData fallbackIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    if (iconAsset.toLowerCase().endsWith('.svg')) {
+      return SvgPicture.asset(
+        iconAsset,
+        width: 24,
+        height: 24,
+        fit: BoxFit.contain,
+        colorFilter: const ColorFilter.mode(
+          AppColors.primaryColor,
+          BlendMode.srcIn,
+        ),
+        placeholderBuilder: (_) =>
+            Icon(fallbackIcon, color: AppColors.primaryColor, size: 24),
+      );
+    }
+
+    return Image.asset(
+      iconAsset,
+      width: 24,
+      height: 24,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) =>
+          Icon(fallbackIcon, color: AppColors.primaryColor, size: 24),
     );
   }
 }

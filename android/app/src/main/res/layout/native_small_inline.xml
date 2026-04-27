@@ -140,7 +140,7 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:includeFontPadding="false"
             android:layout_marginBottom="@dimen/_5sdp"
-            android:background="@drawable/bg_btn_red"
+            android:background="@drawable/bg_btn_splash"
             android:fontFamily="sans-serif-medium"
             android:text="Install"
             android:textAllCaps="false"
